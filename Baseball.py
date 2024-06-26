@@ -7,7 +7,7 @@ import pandas as pd
 
 
 
-def grabStatCast(start_date,end_date,playerID):
+def grabStatCast(start_date,end_date=None,playerID=None):
     """
     Statcast data include pitch-level features such as Perceived Velocity (PV),
     Spin Rate (SR), Exit Velocity (EV), pitch X, Y, and Z coordinates, and more.
@@ -15,10 +15,11 @@ def grabStatCast(start_date,end_date,playerID):
 
     :param start_date: Enter a start date
     :param end_date: Enter a end date
+    :param playerID: Enter a player's ID, this can be obtained from playerIDLookup function
     :return: A dataframe with statcast pitches
     """
-    data = statcast(start_dt=start_date, end_dt=end_date)
-    print(data)
+    data = statcast_pitcher(start_dt=start_date, end_dt=end_date,player_id=playerID)
+    return data
 def playerIDLookup(lastname,firstname=None,fuzz=False):
     """
     :param lastname:Enter the lastname of a player (Be careful of players with special characters)
