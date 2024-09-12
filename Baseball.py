@@ -3,6 +3,7 @@ from pybaseball import playerid_lookup
 from pybaseball import statcast_pitcher
 from pybaseball import pitching_stats
 from pybaseball import batting_stats_range
+from data import dataCleaner
 import pandas as pd
 
 
@@ -19,7 +20,7 @@ def grabStatCast(start_date,end_date=None,playerID=None):
     :return: A dataframe with statcast pitches
     """
     data = statcast_pitcher(start_dt=start_date, end_dt=end_date,player_id=playerID)
-    data.to_csv(f"data/{playerID}.csv")
+    data.to_csv(f"data/unclean/{playerID}.csv")
     return data
 
 def playerIDLookup(lastname,firstname=None,fuzz=False) -> pd.DataFrame:
