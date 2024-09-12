@@ -20,6 +20,7 @@ def grabStatCast(start_date,end_date=None,playerID=None):
     """
     data = statcast_pitcher(start_dt=start_date, end_dt=end_date,player_id=playerID)
     return data
+
 def playerIDLookup(lastname,firstname=None,fuzz=False):
     """
     :param lastname:Enter the lastname of a player (Be careful of players with special characters)
@@ -36,16 +37,19 @@ def playerIDLookup(lastname,firstname=None,fuzz=False):
 
 
 
-def grabPitches():
-    pitcher_df = statcast_pitcher('2024-06-10','2024-06-10',player_id=621244)
+def grabPitches(id):
+    pitcher_df = statcast_pitcher('2024-06-10','2024-06-10',player_id=id)
     modified_df = pitcher_df[['pitch_type','game_date', 'release_speed', 'player_name','inning','balls','strikes','on_3b','on_2b','on_1b']]
-    print(modified_df)
+    print(pitcher_df)
+    pitcher_df.to_csv(f"data/{id}.csv")
 
 def main():
     pd.set_option('display.max_columns', None)
     pd.set_option('display.max_rows', None)
-    #grabStatCast('2017-06-24','2017-06-27')
-    #playerIDLookup('kershaw','clayton')
-    print(playerIDLookup('berríos','josé'))
+    
+    #use player id lookup to grab the id of the player which is needed for looking up the stats via statcast
+    #lastname require, firstname optional, fuzz for possible discrepencies in name
+    print(playerIDLookup('wheeler','zack'))
+
 if __name__ == '__main__':
     main()
