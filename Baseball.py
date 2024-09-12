@@ -19,9 +19,10 @@ def grabStatCast(start_date,end_date=None,playerID=None):
     :return: A dataframe with statcast pitches
     """
     data = statcast_pitcher(start_dt=start_date, end_dt=end_date,player_id=playerID)
+    data.to_csv(f"data/{playerID}.csv")
     return data
 
-def playerIDLookup(lastname,firstname=None,fuzz=False):
+def playerIDLookup(lastname,firstname=None,fuzz=False) -> pd.DataFrame:
     """
     :param lastname:Enter the lastname of a player (Be careful of players with special characters)
     :param firstname:Enter the first name of the player, Firstname is optional
@@ -33,23 +34,21 @@ def playerIDLookup(lastname,firstname=None,fuzz=False):
         return playerid_lookup(lastname,firstname,fuzzy=True)
     else:
         return data
+    
 
-
-
-
-def grabPitches(id):
-    pitcher_df = statcast_pitcher('2024-06-10','2024-06-10',player_id=id)
-    modified_df = pitcher_df[['pitch_type','game_date', 'release_speed', 'player_name','inning','balls','strikes','on_3b','on_2b','on_1b']]
-    print(pitcher_df)
-    pitcher_df.to_csv(f"data/{id}.csv")
 
 def main():
     pd.set_option('display.max_columns', None)
     pd.set_option('display.max_rows', None)
+    opening_day = '2024-03-28'
+    today = '2024-09-09'
     
     #use player id lookup to grab the id of the player which is needed for looking up the stats via statcast
     #lastname require, firstname optional, fuzz for possible discrepencies in name
-    print(playerIDLookup('wheeler','zack'))
+    player_lookup_df = playerIDLookup('wheeler','zack')
+    id = player_lookup_df["key_mlbam"].values[0]
+    print(id)
+    grabStatCast(opening_day,today,playerID=id)
 
 if __name__ == '__main__':
     main()
