@@ -4,6 +4,7 @@ from pybaseball import statcast_pitcher
 from pybaseball import pitching_stats
 from pybaseball import batting_stats_range
 from data import dataCleaner
+import Models
 import pandas as pd
 
 
@@ -42,14 +43,17 @@ def main():
     pd.set_option('display.max_columns', None)
     pd.set_option('display.max_rows', None)
     opening_day = '2024-03-28'
-    today = '2024-09-09'
+    today = '2024-09-19'
     
     #use player id lookup to grab the id of the player which is needed for looking up the stats via statcast
     #lastname require, firstname optional, fuzz for possible discrepencies in name
     player_lookup_df = playerIDLookup('wheeler','zack')
     id = player_lookup_df["key_mlbam"].values[0]
     print(id)
-    grabStatCast(opening_day,today,playerID=id)
+    #grabStatCast(opening_day,today,playerID=id)
+    pitcher = KerasModelMLB(id)
+    pitcher.setup_pitcher_df()
+
 
 if __name__ == '__main__':
     main()
