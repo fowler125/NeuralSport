@@ -8,11 +8,28 @@ class KerasPitcherModel:
     def __init__(self,id) -> None:
         self.id = id
     
+    def new_setup(self):
+        """
+        param :: self
+        We no longer need to use reduced data, as we have already cleaned the data, so no need to split it up
+        -DO NOT HARDCODE ANY VALUES, previous iteration had hardcoded python splits [:xxx], this is not dynamic, and isnt something we want, so from now 
+        on we will use the split method off the keras documentation:
+        https://keras.io/api/models/model_training_apis/
+        """
+        pitcher_df = pd.read_csv(f"data/clean/{self.id}.csv")
+        pitcher_df_X = pitcher_df[["pitch_type","release_speed","release_pos_x","release_pos_z","spin_dir","spin_rate_deprecated","break_angle_deprecated","break_length_deprecated","stand","p_throws","type","balls","strikes","pfx_x","pfx_z","plate_x","plate_z","on_3b","on_2b","on_1b","outs_when_up","inning","vx0","vy0","vz0","ax","ay","az","sz_top","sz_bot","release_spin_rate","release_extension","release_pos_y","at_bat_number","pitch_number","pitch_name","spin_axis"]]
+        pitcher_df_Y = pitcher_df[["zone"]]
+
+        print(len(pitcher_df_X.columns))
+
+
+
+
     def setup_pitcher_df(self):
         """
-        :param id (int) players id value, important for identifying player and csv location
+        :param self (int) players id value, important for identifying player and csv location
         """
-        pitcher_df = pd.read_csv(f"data/unclean/{self.id}.csv")
+        pitcher_df = pd.read_csv(f"data/clean/{self.id}.csv")
         reduced_df_X = pitcher_df[["vx0","vy0","vz0"]]
         reduced_df_Y = pitcher_df[["zone"]]
 
@@ -45,4 +62,4 @@ class KerasPitcherModel:
 
 
 p1 = KerasPitcherModel(554430)
-p1.setup_pitcher_df()
+p1.new_setup()

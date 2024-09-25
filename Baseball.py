@@ -22,6 +22,7 @@ def grabStatCast(start_date,end_date=None,playerID=None):
     """
     data = statcast_pitcher(start_dt=start_date, end_dt=end_date,player_id=playerID)
     data.to_csv(f"data/unclean/{playerID}.csv")
+    print("Data Collection is Finished")
     return data
 
 def playerIDLookup(lastname,firstname=None,fuzz=False) -> pd.DataFrame:
@@ -33,6 +34,7 @@ def playerIDLookup(lastname,firstname=None,fuzz=False) -> pd.DataFrame:
     
     data = playerid_lookup(lastname,firstname,fuzz)
     if data.empty:
+        print("The desired player may have special characters contained inside their name, please check list of players below:","\n")
         return playerid_lookup(lastname,firstname,fuzzy=True)
     else:
         return data
@@ -42,17 +44,18 @@ def playerIDLookup(lastname,firstname=None,fuzz=False) -> pd.DataFrame:
 def main():
     pd.set_option('display.max_columns', None)
     pd.set_option('display.max_rows', None)
-    opening_day = '2024-03-28'
-    today = '2024-09-19'
+    opening_day = '2012-03-28'
+    today = '2023-09-19'
     
     #use player id lookup to grab the id of the player which is needed for looking up the stats via statcast
     #lastname require, firstname optional, fuzz for possible discrepencies in name
-    player_lookup_df = playerIDLookup('wheeler','zack')
+    player_lookup_df = playerIDLookup('scherzer','max')
     id = player_lookup_df["key_mlbam"].values[0]
     print(id)
-    #grabStatCast(opening_day,today,playerID=id)
-    pitcher = KerasModelMLB(id)
-    pitcher.setup_pitcher_df()
+    grabStatCast(opening_day,today,playerID=id)
+    
+    #pitcher = KerasModelMLB(id)
+    #pitcher.setup_pitcher_df()
 
 
 if __name__ == '__main__':
