@@ -9,6 +9,7 @@ import pandas as pd
 
 
 
+
 def grabStatCast(start_date,end_date=None,playerID=None):
     """
     Statcast data include pitch-level features such as Perceived Velocity (PV),
@@ -44,7 +45,7 @@ def playerIDLookup(lastname,firstname=None,fuzz=False) -> pd.DataFrame:
 def main():
     pd.set_option('display.max_columns', None)
     pd.set_option('display.max_rows', None)
-    opening_day = '2012-03-28'
+    opening_day = '2020-03-28'
     today = '2023-09-19'
     
     #use player id lookup to grab the id of the player which is needed for looking up the stats via statcast
