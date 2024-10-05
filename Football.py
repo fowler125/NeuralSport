@@ -5,7 +5,8 @@ import pandas as pd
 from tensorflow import keras
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import StandardScaler
-
+from sklearn.metrics import mean_absolute_error, mean_squared_error, r2_score
+from scipy import stats
 
 
 
@@ -38,35 +39,26 @@ def NGSdata(st_tpe:str, years:list):
     data.to_csv(f"data/football/{st_tpe}_NGS{years}.csv")
     return data
 def grabPlayer(first: str, last: str, data: pd.DataFrame) -> pd.DataFrame:
-    # Combine first and last name to match the format in player_name column
     full_name = f"{first[0].upper()}.{last}"
-    
-    # Filter the DataFrame based on the player's name
     player_data = data[data['player_name'] == full_name]
-    
-    # If no data is found, try matching with player_display_name
     if player_data.empty:
         full_display_name = f"{first} {last}"
         player_data = data[data['player_display_name'] == full_display_name]
-    
     return player_data
-def grabPosition(group:str, data: pd.DataFrame) -> pd.DataFrame:
+def grabPosition(group: str, data: pd.DataFrame) -> pd.DataFrame:
+    return data[data['position'] == group]
 
-    group_data = data[data['position'] == group]
-
-    return group_data
 def prepare_data(position_group_data):
-    # Select relevant features for predicting passing yards
     features = [
         'completions', 'attempts', 'passing_tds', 'interceptions',
         'sacks', 'sack_yards', 'passing_air_yards', 'passing_yards_after_catch',
         'passing_first_downs', 'passing_epa', 'pacr'
     ]
-    
     X = position_group_data[features]
     y = position_group_data['passing_yards']
-    
     return X, y
+    
+    
 def create_model(input_shape):
     model = keras.Sequential([
         keras.layers.Dense(128, activation='relu', input_shape=(input_shape,)),
@@ -80,20 +72,12 @@ def create_model(input_shape):
     model.compile(optimizer='adam', loss='mean_squared_error', metrics=['mae'])
     return model
 def train_model(X, y):
-    # Split the data
     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
-    
-    # Scale the features
     scaler = StandardScaler()
     X_train_scaled = scaler.fit_transform(X_train)
     X_test_scaled = scaler.transform(X_test)
-    
-    # Create and train the model
     model = create_model(X_train.shape[1])
-    
-    # Add early stopping
     early_stopping = keras.callbacks.EarlyStopping(patience=10, restore_best_weights=True)
-    
     history = model.fit(
         X_train_scaled, y_train,
         epochs=200,
@@ -103,25 +87,67 @@ def train_model(X, y):
         verbose=1
     )
     
-    # Evaluate the model
-    test_loss, test_mae = model.evaluate(X_test_scaled, y_test)
-    print(f"Test Loss: {test_loss}")
-    print(f"Test Mean Absolute Error: {test_mae}")
     
-    return model, scaler, history
+    # Calculate MAPE for accuracy score
+    y_pred = model.predict(X_test_scaled).flatten()
+    
+    mae = mean_absolute_error(y_test, y_pred)
+    rmse = np.sqrt(mean_squared_error(y_test,y_pred))
+    r2 = r2_score(y_test,y_pred)
+
+    accuracy = 1 - (mae / np.mean(y_test))
+    
+    print(f"Mean Absolute Error: {mae:.2f} yards")
+    print(f"Root Mean Squared Error: {rmse:.2f} yards")
+    print(f"R-squared Score: {r2:.4f}")
+    print(f"Custom Accuracy: {accuracy:.2%}")
+    
+    return model, scaler, history, (mae, rmse, r2, accuracy)
+
 def predict_passing_yards(model, scaler, new_data):
     new_data_scaled = scaler.transform(new_data)
     predictions = model.predict(new_data_scaled)
     return predictions.flatten()
+
+def predict_next_game(player_data, model, scaler):
+
     
+    features = [
+        'completions', 'attempts', 'passing_tds', 'interceptions',
+        'sacks', 'sack_yards', 'passing_air_yards', 'passing_yards_after_catch',
+        'passing_first_downs', 'passing_epa', 'pacr'
+    ]
+    avg_stats = player_data[features].mean().to_frame().T
+    
+    # Make prediction
+    next_game_prediction = predict_passing_yards(model, scaler, avg_stats)
+    
+    # Calculate confidence interval
+    all_yards = player_data['passing_yards']
+    pred_std = np.std(all_yards)
+    degrees_of_freedom = len(all_yards)-1
+    confidence_level = 0.95
+    t_value = stats.t.ppf((1+confidence_level)/2,degrees_of_freedom)
+    margin_of_error = t_value * (pred_std/np.sqrt(len(all_yards)))
+    confidence_interval = (
+        next_game_prediction[0]-margin_of_error,
+        next_game_prediction[0]+margin_of_error
+    )
+    
+    """
+    confidence_interval = stats.t.interval(alpha=0.95, df=len(last_games)-1,
+                                           loc=next_game_prediction[0],
+                                           scale=pred_std)
+    """
+    return next_game_prediction[0], confidence_interval
 def main():
     #print(nfl.import_pbp_data([2024]))
     #print(nfl.import_seasonal_pfr('pass', [2024]))
-    print(nfl.see_weekly_cols())
+    #print(nfl.see_weekly_cols())
     week_df = weeklyStats([2019,2020,2021,2022,2023,2024])
     #result = grabPlayer("Aaron", "Rodgers", week_df)
     #print(result)
-    print(grabPosition('QB',week_df))
+    #print(grabPosition('QB',week_df))
     #NGSdata('passing',[2024])
     
     
@@ -133,25 +159,34 @@ def main():
     X, y = prepare_data(qb_data)
     
     # Train the model
-    model, scaler, history = train_model(X, y)
+    model, scaler, history,metrics= train_model(X, y)
+
+    mae,rmse,r2,accuracy = metrics
+
+    first_name = "Kirk"
+    last_name = "Cousins"
     
     # Example: Make predictions for a specific player
-    player_data = grabPlayer("Aaron", "Rodgers", qb_data)
-    player_features = player_data[X.columns]  # Ensure we use the same features as in training
-    predicted_yards = predict_passing_yards(model, scaler, player_features)
-    print(f"Predicted passing yards for Aaron Rodgers: {predicted_yards}")
-    
-    # Example: Make predictions for a new game
-    new_game_stats = pd.DataFrame({
-        'completions': [25], 'attempts': [40], 'passing_tds': [2], 'interceptions': [1],
-        'sacks': [2], 'sack_yards': [15], 'passing_air_yards': [200],
-        'passing_yards_after_catch': [100], 'passing_first_downs': [15],
-        'passing_epa': [10.5], 'pacr': [0.8]
-    })
-    predicted_yards = predict_passing_yards(model, scaler, new_game_stats)
-    print(f"Predicted passing yards for new game: {predicted_yards[0]:.2f}")
+    player_data = grabPlayer(first_name, last_name, qb_data)
 
+    player_data.to_csv(f"data/football/{first_name}{last_name}.csv")
+
+    predicted_yards, confidence_interval = predict_next_game(player_data, model, scaler)
+    print(f"\nModel Performance Metrics:")
+
+    #avg absolute difference between predicted and actual yards
+    print(f"Mean Absolute Error: {mae:.2f} yards")
+
+    #gives the square root of the average squared difference between predicted and actual yards
+    print(f"Root Mean Squared Error: {rmse:.2f} yards")
+    
+    #how much variance in the data in our model. ranges from 0-1
+    print(f"R-squared Score: {r2:.4f}")
+    print(f"Custom Accuracy: {accuracy:.2%}")
+    print(f"\nPredicted passing yards for {first_name} {last_name} in his next game: {predicted_yards:.2f}")
+    print(f"95% Confidence Interval: {confidence_interval[0]:.2f} to {confidence_interval[1]:.2f}")
     return model, scaler
+    
 
 if __name__ == "__main__":
     main()
