@@ -6,6 +6,15 @@ from tensorflow.keras import models, datasets, layers, optimizers, ops
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import LabelEncoder
 
+features_dict = {
+    "reduced":["vx0","vy0","vz0","ax","ay","az"],
+    "full":["pitch_type","release_speed","release_pos_x","release_pos_z","spin_dir",
+            "spin_rate_deprecated","break_angle_deprecated","break_length_deprecated",
+            "zone","stand","p_throws","type","balls","strikes","pfx_x","pfx_z","plate_x","plate_z",
+            "on_3b","on_2b","on_1b","outs_when_up","inning","vx0","vy0","vz0","ax","ay","az","sz_top",
+            "sz_bot","release_spin_rate","release_extension","release_pos_y","at_bat_number",
+            "pitch_number","pitch_name","spin_axis"]
+}
 class KerasPitcherModel:
     def __init__(self,id) -> None:
         self.id = id
@@ -36,10 +45,17 @@ class KerasPitcherModel:
         1. Could not convert string to float 'SI' Error, might need to convert all text data to a 
             number sibling (ex. pitch_type, 1 = Fastball, 2= Curveball, etc.)
             //Possible Solution - One hot encoding
+        2. Issues with missing values
+            //Solved - Dropped missing values from reduced data set (in other words, we did not 
+            drop values from the large data set, but we did drop values from the reduced data set)
+        3. Added in Dictionary to select features more quickly
+            //Solved - Added in Dictionary to select features more quickly
+        4. Added in Label Encoder
+            //Solved - Added in Label Encoder (label enconder changed the range from [0,13) to [0, classes-1] and shifted each class down 1 value)
         """
         pitcher_df = pd.read_csv(f"data/clean/{self.id}.csv")
         
-        pitcher_df_X = pitcher_df[["vx0","vy0","vz0","ax","ay","az"]]
+        pitcher_df_X = pitcher_df[features_dict["reduced"]]
         pitcher_df_X = pitcher_df_X.dropna(how="any")
         
         pitcher_df_Y = pitcher_df[["zone"]]
