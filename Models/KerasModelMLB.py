@@ -4,6 +4,7 @@ import pandas as pd
 import keras
 from tensorflow.keras import models, datasets, layers, optimizers, ops
 from sklearn.model_selection import train_test_split
+from sklearn.preprocessing import LabelEncoder
 
 class KerasPitcherModel:
     def __init__(self,id) -> None:
@@ -29,16 +30,38 @@ class KerasPitcherModel:
 
         Different, should use early stopping, nth number of epochs
 
-        Hyperparamater Tuning as well needs to be implemented 
+        Hyperparamater Tuning as well needs to be implemented
+
+        Current Issues 10/23
+        1. Could not convert string to float 'SI' Error, might need to convert all text data to a 
+            number sibling (ex. pitch_type, 1 = Fastball, 2= Curveball, etc.)
+            //Possible Solution - One hot encoding
         """
         pitcher_df = pd.read_csv(f"data/clean/{self.id}.csv")
-        pitcher_df_X = pitcher_df[["pitch_type","release_speed","release_pos_x","release_pos_z","spin_dir","spin_rate_deprecated","break_angle_deprecated","break_length_deprecated","stand","p_throws","type","balls","strikes","pfx_x","pfx_z","plate_x","plate_z","on_3b","on_2b","on_1b","outs_when_up","inning","vx0","vy0","vz0","ax","ay","az","sz_top","sz_bot","release_spin_rate","release_extension","release_pos_y","at_bat_number","pitch_number","pitch_name","spin_axis"]]
+        
+        pitcher_df_X = pitcher_df[["vx0","vy0","vz0","ax","ay","az"]]
+        pitcher_df_X = pitcher_df_X.dropna(how="any")
+        
         pitcher_df_Y = pitcher_df[["zone"]]
+        pitcher_df_Y = pitcher_df_Y.dropna(how="any")
+        
+
+        print(pitcher_df_X.shape)
+        print(pitcher_df_Y.shape)
+
+        le = LabelEncoder()
+        pitcher_df_Y = le.fit_transform(pitcher_df_Y)
 
         print(len(pitcher_df_X.columns))
+        #pitcher_df_X = pd.get_dummies(pitcher_df_X, columns=["pitch_type", "stand", "p_throws","type","pitch_name"])
+        X_train, X_test, y_train, y_test = train_test_split(pitcher_df_X, pitcher_df_Y, test_size=0.3)
 
         test = keras.Input(shape = (pitcher_df_X.shape[1],))
-
+        """
+        Relu (rectified linear unit) activation function
+        -   an activation function is a layer in a neural network that introduces non-linearity to the model
+        -   It takes the output of the previous layer, applies a non-linear transformation, and returns the transformed output
+        """
         dense = layers.Dense(64, activation="relu")
         x = dense(test)
 
@@ -52,7 +75,7 @@ class KerasPitcherModel:
             metrics=["accuracy"],
         )
 
-        history = model.fit(X_train, y_train, epochs=100)
+        history = model.fit(X_train, y_train,epochs=100)
 
         test_scores = model.evaluate(X_test, y_test, verbose=2)
         print("Test loss:", test_scores[0])
