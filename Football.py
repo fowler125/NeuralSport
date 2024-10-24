@@ -29,8 +29,18 @@ def weeklyPfr(stat_type:str,years:list):
     return data
 
 def weeklyStats(years:list):
-   
-    #logging.info(f"Retrieving weekly stats data for years: {years}")
+
+    '''
+    Retrieve weekly stats data for a list of years.
+
+    Parameters:
+    - years (list): A list of years to retrieve the data for.
+
+    Returns:
+    None
+
+    Saves the retrieved data to a CSV file in the 'data/football' directory with a filename based on the years.
+    '''
     data = nfl.import_weekly_data(years)
     data.to_csv(f"data/football/stats_{years}.csv")
     return data
