@@ -5,6 +5,7 @@ import keras
 from tensorflow.keras import models, datasets, layers, optimizers, ops
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import LabelEncoder
+from keras.callbacks import EarlyStopping
 
 features_dict = {
     "reduced":["vx0","vy0","vz0","ax","ay","az"],
@@ -72,7 +73,7 @@ class KerasPitcherModel:
 
         print(len(pitcher_df_X.columns))
         #pitcher_df_X = pd.get_dummies(pitcher_df_X, columns=["pitch_type", "stand", "p_throws","type","pitch_name"])
-        X_train, X_test, y_train, y_test = train_test_split(pitcher_df_X, pitcher_df_Y, test_size=0.3)
+        X_train, X_val, y_train, y_val = train_test_split(pitcher_df_X, pitcher_df_Y, test_size=0.3)
 
         test = keras.Input(shape = (pitcher_df_X.shape[1],))
         """
@@ -94,9 +95,22 @@ class KerasPitcherModel:
             metrics=["accuracy"],
         )
 
-        history = model.fit(X_train, y_train,epochs=100)
+        early_stopping = EarlyStopping(
+            patience=30,
+            min_delta = 0.001,
+            restore_best_weights=True
+        )
 
-        test_scores = model.evaluate(X_test, y_test, verbose=2)
+        history = model.fit(
+            X_train, 
+            y_train,
+            epochs=300,
+            batch_size=32,
+            validation_data=(X_val, y_val),
+            callbacks=[early_stopping]
+        )
+
+        test_scores = model.evaluate(X_val, y_val, verbose=2)
         print("Test loss:", test_scores[0])
         print("Test accuracy:", test_scores[1])
 
