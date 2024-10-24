@@ -29,7 +29,12 @@ def weeklyPfr(stat_type:str,years:list):
     return data
 
 def weeklyStats(years:list):
+<<<<<<< HEAD
 
+=======
+   
+    #logging.info(f"Retrieving weekly stats data for years: {years}")
+>>>>>>> 671aeff77b715c64eb85cb1c0e4001f7b84d7054
     '''
     Retrieve weekly stats data for a list of years.
 
@@ -107,14 +112,15 @@ def train_model(X, y):
 
     accuracy = 1 - (mae / np.mean(y_test))
     
-    print(f"Mean Absolute Error: {mae:.2f} yards")
-    print(f"Root Mean Squared Error: {rmse:.2f} yards")
-    print(f"R-squared Score: {r2:.4f}")
-    print(f"Custom Accuracy: {accuracy:.2%}")
+    #print(f"Mean Absolute Error: {mae:.2f} yards")
+    #print(f"Root Mean Squared Error: {rmse:.2f} yards")
+    #print(f"R-squared Score: {r2:.4f}")
+    #print(f"Custom Accuracy: {accuracy:.2%}")
     
     return model, scaler, history, (mae, rmse, r2, accuracy)
 
 def predict_passing_yards(model, scaler, new_data):
+    
     new_data_scaled = scaler.transform(new_data)
     predictions = model.predict(new_data_scaled)
     return predictions.flatten()
@@ -154,7 +160,7 @@ def main():
     #print(nfl.import_pbp_data([2024]))
     #print(nfl.import_seasonal_pfr('pass', [2024]))
     #print(nfl.see_weekly_cols())
-    week_df = weeklyStats([2019,2020,2021,2022,2023,2024])
+    week_df = weeklyStats([2022,2023,2024])
     #result = grabPlayer("Aaron", "Rodgers", week_df)
     #print(result)
     #print(grabPosition('QB',week_df))
@@ -168,13 +174,14 @@ def main():
     # Prepare the data
     X, y = prepare_data(qb_data)
     
+    print(qb_data)
     # Train the model
     model, scaler, history,metrics= train_model(X, y)
 
     mae,rmse,r2,accuracy = metrics
 
-    first_name = "Kirk"
-    last_name = "Cousins"
+    first_name = "Geno"
+    last_name = "Smith"
     
     # Example: Make predictions for a specific player
     player_data = grabPlayer(first_name, last_name, qb_data)
