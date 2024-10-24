@@ -13,7 +13,9 @@ features_dict = {
             "zone","stand","p_throws","type","balls","strikes","pfx_x","pfx_z","plate_x","plate_z",
             "on_3b","on_2b","on_1b","outs_when_up","inning","vx0","vy0","vz0","ax","ay","az","sz_top",
             "sz_bot","release_spin_rate","release_extension","release_pos_y","at_bat_number",
-            "pitch_number","pitch_name","spin_axis"]
+            "pitch_number","pitch_name","spin_axis"],
+    "velocity":["vx0","vy0","vz0"],
+    "numerical_only":["vx0","vy0","vz0","ax","ay","az","pfx_x","pfx_z","plate_x","plate_z"],
 }
 class KerasPitcherModel:
     def __init__(self,id) -> None:
@@ -55,7 +57,7 @@ class KerasPitcherModel:
         """
         pitcher_df = pd.read_csv(f"data/clean/{self.id}.csv")
         
-        pitcher_df_X = pitcher_df[features_dict["reduced"]]
+        pitcher_df_X = pitcher_df[features_dict["numerical_only"]]
         pitcher_df_X = pitcher_df_X.dropna(how="any")
         
         pitcher_df_Y = pitcher_df[["zone"]]
@@ -75,6 +77,7 @@ class KerasPitcherModel:
         test = keras.Input(shape = (pitcher_df_X.shape[1],))
         """
         Relu (rectified linear unit) activation function
+    
         -   an activation function is a layer in a neural network that introduces non-linearity to the model
         -   It takes the output of the previous layer, applies a non-linear transformation, and returns the transformed output
         """
