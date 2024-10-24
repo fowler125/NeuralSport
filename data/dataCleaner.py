@@ -31,5 +31,5 @@ class dataCleaner:
         clean_df.to_csv(f"data/clean/{self.id}.csv", index=False)
         print(f"Cleaning for file {self.id}, has been finished!")
 
-p1 = dataCleaner(554430)
+p1 = dataCleaner(656302)
 p1.open_file()

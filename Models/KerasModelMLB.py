@@ -122,10 +122,6 @@ class KerasPitcherModel:
             callbacks=[early_stopping]
         )
 
-        """test_scores = model.evaluate(X_val, y_val, verbose=2)
-        print("Test loss:", test_scores[0])
-        print("Test accuracy:", test_scores[1])"""
-
         test_loss, test_acc = model.evaluate(X_test, y_test)
         print(f"Test accuracy: {test_acc:.4f}")
 
@@ -187,5 +183,5 @@ class KerasPitcherModel:
 
 
 
-p1 = KerasPitcherModel(554430)
+p1 = KerasPitcherModel(656302)
 p1.new_setup()

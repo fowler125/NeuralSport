@@ -43,12 +43,12 @@ def playerIDLookup(lastname,firstname=None,fuzz=False) -> pd.DataFrame:
 def main():
     pd.set_option('display.max_columns', None)
     pd.set_option('display.max_rows', None)
-    opening_day = '2024-03-28'
+    opening_day = '2021-03-28'
     today = '2024-09-19'
     
     #use player id lookup to grab the id of the player which is needed for looking up the stats via statcast
     #lastname require, firstname optional, fuzz for possible discrepencies in name
-    player_lookup_df = playerIDLookup('wheeler','zack')
+    player_lookup_df = playerIDLookup('cease','dylan')
     id = player_lookup_df["key_mlbam"].values[0]
     print(id)
     grabStatCast(opening_day,today,playerID=id)
