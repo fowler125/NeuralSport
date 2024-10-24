@@ -73,7 +73,19 @@ class KerasPitcherModel:
 
         print(len(pitcher_df_X.columns))
         #pitcher_df_X = pd.get_dummies(pitcher_df_X, columns=["pitch_type", "stand", "p_throws","type","pitch_name"])
-        X_train, X_val, y_train, y_val = train_test_split(pitcher_df_X, pitcher_df_Y, test_size=0.3)
+        #X_train, X_val, y_train, y_val = train_test_split(pitcher_df_X, pitcher_df_Y, test_size=0.3)
+
+        
+        X_train, X_val, y_train, y_val = train_test_split(pitcher_df_X, pitcher_df_Y, test_size=0.3, random_state=42)
+        X_val, X_test, y_val, y_test = train_test_split(X_val, y_val, test_size=0.5, random_state=42)
+        
+            
+            # - X_train: training data
+            # - y_train: training labels
+            # - X_val: validation data
+            # - y_val: validation labels
+            # - X_test: testing data
+            # - y_test: testing labels
 
         test = keras.Input(shape = (pitcher_df_X.shape[1],))
         """
@@ -96,8 +108,8 @@ class KerasPitcherModel:
         )
 
         early_stopping = EarlyStopping(
-            patience=30,
-            min_delta = 0.001,
+            patience=30,        #number of epochs to wait before stopping
+            min_delta = 0.001,  #min value to consider an improvement
             restore_best_weights=True
         )
 
@@ -110,9 +122,31 @@ class KerasPitcherModel:
             callbacks=[early_stopping]
         )
 
-        test_scores = model.evaluate(X_val, y_val, verbose=2)
+        """test_scores = model.evaluate(X_val, y_val, verbose=2)
         print("Test loss:", test_scores[0])
-        print("Test accuracy:", test_scores[1])
+        print("Test accuracy:", test_scores[1])"""
+
+        test_loss, test_acc = model.evaluate(X_test, y_test)
+        print(f"Test accuracy: {test_acc:.4f}")
+
+
+        # Plot training and validation accuracy values
+        plt.plot(history.history["accuracy"])
+        plt.plot(history.history["val_accuracy"])
+        plt.title("Model accuracy")
+        plt.ylabel("Accuracy")
+        plt.xlabel("Epoch")
+        plt.legend(["Train", "Val"], loc="upper left")
+        plt.show()
+
+        # Plot training and validation loss values
+        plt.plot(history.history["loss"])
+        plt.plot(history.history["val_loss"])
+        plt.title("Model loss")
+        plt.ylabel("Loss")
+        plt.xlabel("Epoch")
+        plt.legend(["Train", "Val"], loc="upper left")
+        plt.show()
 
 
 
