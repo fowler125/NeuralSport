@@ -47908,3 +47908,10 @@ data/__pycache__/dataCleaner.cpython-311.pyc
 .venv/Scripts/pip.exe
 .venv/Scripts/pip3.11.exe
 .venv/Scripts/pip3.exe
+.venv/Scripts/python.exe
+.venv
+venv 
+env 
+.venv/
+.env
+.env/
