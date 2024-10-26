@@ -60,9 +60,9 @@ Plots the pitch data for the given pitcher.
 * **Returns:**
   - None.
 
-#### `setup_pitcher_df(self)`
+#### `setup_pitcher_df(self) (Deprecated)` 
 
-Sets up the pitcher data frame.
+(Deprecated) Sets up the pitcher data frame.
 
 * **Parameters:**
   - None.
