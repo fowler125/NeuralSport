@@ -1,0 +1,48 @@
+This file is meant to keep an up to date list of bugs/fixes, issues and new features to add in. Similar to feature request, and radars
+
+Name:Jabari Fowler
+Updated: 10/25/2024
+
+Bugs:
+-None at the moment, however there may be a possible issue with the dataCleaner.py file for splitting. Since we split the data into X-Axis and y-Axis
+we removed the rows after the splitting happen, a possible solution will be to remove the empty cells before the split happens
+and then go ahead and split the data.
+
+Issue Fixes:
+-None at the time
+
+Feature addition timelines:
+Pitcher Model  --> Completed (10/23)
+Add in Hyperparameter Tuning ---> Finish by (11/1)
+Add in Correlation Matrix and Confusion Matrix (Rob) ---> Finish by (11/1)
+
+
+Updates: 10/26/2024
+
+Notes: We will be in the process of moving all the code notes, out of the code and into its own seperate documentation directory,
+which should help for better documentation for the project, as the notes will become to large and too lengthy to reference
+inside the code.
+
+
+
+        param :: self
+        We no longer need to use reduced data, as we have already cleaned the data, so no need to split it up
+        -DO NOT HARDCODE ANY VALUES, previous iteration had hardcoded python splits [:xxx], this is not dynamic, and isnt something we want, so from now 
+        on we will use the split method off the keras documentation:
+        https://keras.io/api/models/model_training_apis/
+
+        Different, should use early stopping, nth number of epochs
+
+        Hyperparamater Tuning as well needs to be implemented
+
+        Current Issues 10/23
+        1. Could not convert string to float 'SI' Error, might need to convert all text data to a 
+            number sibling (ex. pitch_type, 1 = Fastball, 2= Curveball, etc.)
+            //Possible Solution - One hot encoding
+        2. Issues with missing values
+            //Solved - Dropped missing values from reduced data set (in other words, we did not 
+            drop values from the large data set, but we did drop values from the reduced data set)
+        3. Added in Dictionary to select features more quickly
+            //Solved - Added in Dictionary to select features more quickly
+        4. Added in Label Encoder
+            //Solved - Added in Label Encoder (label enconder changed the range from [0,13) to [0, classes-1] and shifted each class down 1 value)

@@ -2,10 +2,12 @@ import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 import keras
+import seaborn as sns
 from tensorflow.keras import models, datasets, layers, optimizers, ops
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import LabelEncoder
 from keras.callbacks import EarlyStopping
+import matplotlib.image as mpimg
 
 features_dict = {
     "reduced":["vx0","vy0","vz0","ax","ay","az"],
@@ -17,6 +19,7 @@ features_dict = {
             "pitch_number","pitch_name","spin_axis"],
     "velocity":["vx0","vy0","vz0"],
     "numerical_only":["vx0","vy0","vz0","ax","ay","az","pfx_x","pfx_z","plate_x","plate_z"],
+    "plotting_data":[]
 }
 class KerasPitcherModel:
     def __init__(self,id) -> None:
@@ -31,31 +34,83 @@ class KerasPitcherModel:
             plt.scatter(pitcher_df[i],pitcher_df_Y)
             plt.show()
 
+    def correlation_matrix(self,data:pd.DataFrame):
+        corr_matrix = data.corr()
+        plt.figure(figsize=(10,8))
+        sns.heatmap(corr_matrix, annot=True,cmap='coolwarm',square=True)
+        plt.title("Correlation Matrix")
+        plt.show()
+    def pitch_plotting(self,data:pd.DataFrame): 
+        
+        
+        # Create a new figure
+        plt.figure(figsize=(8, 8))
+        
+        # Get the maximum and minimum x and z values from the data
+        x_max = data['plate_x'].max()
+        x_min = data['plate_x'].min()
+        z_max = data['plate_z'].max()
+        z_min = data['plate_z'].min()
+        
+        # Calculate the range of the x and z values
+        x_range = x_max - x_min
+        z_range = z_max - z_min
+        
+        # Calculate the maximum range of the x and z values
+        max_range = max(x_range, z_range)
+        
+        # Calculate the scaling factor for the x and z values
+        x_scale = (400 / max_range)
+        z_scale = (400 / max_range)
+        
+        # Define a dictionary to map zone numbers to colors
+        zone_colors = {
+            1: 'red',
+            2: 'orange',
+            3: 'yellow',
+            4: 'green',
+            5: 'blue',
+            6: 'purple',
+            7: 'pink',
+            8: 'brown',
+            9: 'gray',
+            10: 'black',
+            11: 'white'
+        }
+        
+        # Plot each pitch using scaled plate_x and plate_z coordinates and zone-based colors
+        for index, row in data.iterrows():
+            zone = row['zone']
+            color = zone_colors.get(zone, 'black')
+            plt.scatter((row['plate_x'] - (x_max + x_min) / 2) * x_scale, (row['plate_z'] - (z_max + z_min) / 2) * z_scale, c=color, s=50, alpha=0.5)
+        
+        # Add a line at the origin (middle of the plot)
+        plt.axvline(0, color='k', linestyle='--', alpha=0.5)
+        plt.axhline(0, color='k', linestyle='--', alpha=0.5)
+        
+        # Set the limits of the plot to be symmetric around the origin
+        plt.xlim(-400, 400)
+        plt.ylim(-400, 400)
+        
+        # Show the plot
+        plt.show()
+        
+    def pitcher_plotting(self,data:pd.DataFrame):
+        # Filter the data to only include rows with 'ball' or 'called_strike' in the 'description' column
+        data_filter = data[(data['description'].isin(['ball', 'called_strike'])) & (~data['sz_top'].isna()) & (~data['sz_bot'].isna())]
+
+        fig,ax = plt.subplots(figsize=(8,8))
+
+        # Plot the points
+        sns.scatterplot(x='plate_x', y='plate_z', hue='type', data=data, alpha=0.5, ax=ax)
+
+        # Plot the strike zone rectangle
+        ax.add_patch(plt.Rectangle((-0.7083, data['sz_bot'].median()), 
+                                   1.4166, data['sz_top'].median() - data['sz_bot'].median(), 
+                                   alpha=0, edgecolor='gray', facecolor='none', linewidth=1))
+
 
     def new_setup(self):
-        """
-        param :: self
-        We no longer need to use reduced data, as we have already cleaned the data, so no need to split it up
-        -DO NOT HARDCODE ANY VALUES, previous iteration had hardcoded python splits [:xxx], this is not dynamic, and isnt something we want, so from now 
-        on we will use the split method off the keras documentation:
-        https://keras.io/api/models/model_training_apis/
-
-        Different, should use early stopping, nth number of epochs
-
-        Hyperparamater Tuning as well needs to be implemented
-
-        Current Issues 10/23
-        1. Could not convert string to float 'SI' Error, might need to convert all text data to a 
-            number sibling (ex. pitch_type, 1 = Fastball, 2= Curveball, etc.)
-            //Possible Solution - One hot encoding
-        2. Issues with missing values
-            //Solved - Dropped missing values from reduced data set (in other words, we did not 
-            drop values from the large data set, but we did drop values from the reduced data set)
-        3. Added in Dictionary to select features more quickly
-            //Solved - Added in Dictionary to select features more quickly
-        4. Added in Label Encoder
-            //Solved - Added in Label Encoder (label enconder changed the range from [0,13) to [0, classes-1] and shifted each class down 1 value)
-        """
         pitcher_df = pd.read_csv(f"data/clean/{self.id}.csv")
         
         pitcher_df_X = pitcher_df[features_dict["numerical_only"]]
@@ -67,7 +122,10 @@ class KerasPitcherModel:
 
         print(pitcher_df_X.shape)
         print(pitcher_df_Y.shape)
+        print(self.correlation_matrix(pitcher_df_X))
 
+        print(self.pitch_plotting(pitcher_df_X))
+        
         le = LabelEncoder()
         pitcher_df_Y = le.fit_transform(pitcher_df_Y)
 
@@ -116,7 +174,7 @@ class KerasPitcherModel:
         history = model.fit(
             X_train, 
             y_train,
-            epochs=300,
+            epochs=3,
             batch_size=32,
             validation_data=(X_val, y_val),
             callbacks=[early_stopping]
@@ -144,8 +202,19 @@ class KerasPitcherModel:
         plt.legend(["Train", "Val"], loc="upper left")
         plt.show()
 
+         
+        # Get the predicted values
+        predicted_values = model.predict(pitcher_df_X)
+        
+        # Print out the actual values and predicted values
+        for i in range(len(pitcher_df_Y)):
+            print(f"Actual value: {pitcher_df_Y[i]}")
+            print(f"Predicted value: {predicted_values[i]}")
+            print()
+        
+        
 
-
+        
 
     def setup_pitcher_df(self):
         """
