@@ -19,7 +19,7 @@ features_dict = {
             "pitch_number","pitch_name","spin_axis"],
     "velocity":["vx0","vy0","vz0"],
     "numerical_only":["vx0","vy0","vz0","ax","ay","az","pfx_x","pfx_z","plate_x","plate_z"],
-    "plotting_data":[]
+    "plotting_data":["vx0","vy0","vz0","ax","ay","az","pfx_x","pfx_z","plate_x","plate_z","sz_top","sz_bot"]
 }
 class KerasPitcherModel:
     def __init__(self,id) -> None:
@@ -101,19 +101,55 @@ class KerasPitcherModel:
 
         fig,ax = plt.subplots(figsize=(8,8))
 
+        x_max = data['plate_x'].max()
+        x_min = data['plate_x'].min()
+        z_max = data['plate_z'].max()
+        z_min = data['plate_z'].min()
+
         # Plot the points
         sns.scatterplot(x='plate_x', y='plate_z', hue='type', data=data, alpha=0.5, ax=ax)
 
         # Plot the strike zone rectangle
-        ax.add_patch(plt.Rectangle((-0.7083, data['sz_bot'].median()), 
+        strike_zone_rect = plt.Rectangle((-0.7083, data_filter['sz_bot'].median()), 1.4166, data['sz_top'].median() - data['sz_bot'].median(), alpha=0.5, edgecolor='black', facecolor='none', linewidth=2)
+        ax.add_patch(strike_zone_rect)
+        """ax.add_patch(plt.Rectangle((-0.7083, data['sz_bot'].median()), 
                                    1.4166, data['sz_top'].median() - data['sz_bot'].median(), 
-                                   alpha=0, edgecolor='gray', facecolor='none', linewidth=1))
+                                   alpha=0, edgecolor='black', facecolor='none', linewidth=2))"""
+        # Set the title and labels
+        ax.set_title('Called Balls and Strikes')
+        ax.set_xlabel('Horizontal Position')
+        ax.set_ylabel('Vertical Position')
 
+        # Set the color palette
+        sns.set_palette(['lightskyblue', 'cornflowerblue'])
+
+        # Set the aspect ratio
+        ax.set_aspect('equal')
+
+        # Remove the legend
+        #ax.get_legend().remove()
+
+        # Set the font family
+        plt.rcParams['font.family'] = 'serif'
+        plt.show()
+
+        # Facet by type
+        for type in data_filter['type'].unique():
+            fig, ax = plt.subplots(figsize=(8, 8))
+            sns.scatterplot(x='plate_x', y='plate_z', hue='type', data=data_filter[data_filter['type'] == type], alpha=0.5, ax=ax,legend="full")
+            ax.add_patch(plt.Rectangle((-0.7083, data_filter['sz_bot'].median()), 1.4166, data_filter['sz_top'].median() - data_filter['sz_bot'].median(), alpha=0.5, edgecolor='gray', facecolor='none', linewidth=2))
+            ax.set_title(type)
+            ax.set_xlabel('Horizontal Position')
+            ax.set_ylabel('Vertical Position')
+            ax.set_aspect('equal')
+            ax.get_legend().remove()
+            plt.show()
 
     def new_setup(self):
         pitcher_df = pd.read_csv(f"data/clean/{self.id}.csv")
+        pitcher_unclean = pd.read_csv(f"data/unclean/{self.id}.csv")
         
-        pitcher_df_X = pitcher_df[features_dict["numerical_only"]]
+        pitcher_df_X = pitcher_df[features_dict["plotting_data"]]
         pitcher_df_X = pitcher_df_X.dropna(how="any")
         
         pitcher_df_Y = pitcher_df[["zone"]]
@@ -124,7 +160,7 @@ class KerasPitcherModel:
         print(pitcher_df_Y.shape)
         print(self.correlation_matrix(pitcher_df_X))
 
-        print(self.pitch_plotting(pitcher_df_X))
+        print(self.pitcher_plotting(pitcher_unclean))
         
         le = LabelEncoder()
         pitcher_df_Y = le.fit_transform(pitcher_df_Y)
@@ -203,7 +239,7 @@ class KerasPitcherModel:
         plt.show()
 
          
-        # Get the predicted values
+        '''# Get the predicted values
         predicted_values = model.predict(pitcher_df_X)
         
         # Print out the actual values and predicted values
@@ -211,7 +247,7 @@ class KerasPitcherModel:
             print(f"Actual value: {pitcher_df_Y[i]}")
             print(f"Predicted value: {predicted_values[i]}")
             print()
-        
+        '''
         
 
         
