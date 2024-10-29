@@ -3,7 +3,7 @@ from pybaseball import playerid_lookup
 from pybaseball import statcast_pitcher
 from pybaseball import pitching_stats
 from pybaseball import batting_stats_range
-import Models
+from Models import KerasModelMLB
 import pandas as pd
 
 
@@ -52,6 +52,7 @@ def main():
     id = player_lookup_df["key_mlbam"].values[0]
     print(id)
     grabStatCast(opening_day,today,playerID=id)
+    
     
     #pitcher = KerasModelMLB(id)
     #pitcher.setup_pitcher_df()

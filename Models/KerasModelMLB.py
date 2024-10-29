@@ -24,7 +24,7 @@ features_dict = {
 class KerasPitcherModel:
     def __init__(self,id) -> None:
         self.id = id
-    def plotting(self):
+    def deprecated_plotting(self):
         """ for loop to go thru all the features, and plot them in a graph, x axis = features, y axis= zone"""
         pitcher_df = pd.read_csv(f"data/clean/{self.id}.csv")
         pitcher_df_X = pitcher_df[["pitch_type","release_speed","release_pos_x","release_pos_z","spin_dir","spin_rate_deprecated","break_angle_deprecated","break_length_deprecated","stand","p_throws","type","balls","strikes","pfx_x","pfx_z","plate_x","plate_z","on_3b","on_2b","on_1b","outs_when_up","inning","vx0","vy0","vz0","ax","ay","az","sz_top","sz_bot","release_spin_rate","release_extension","release_pos_y","at_bat_number","pitch_number","pitch_name","spin_axis"]]
@@ -40,7 +40,7 @@ class KerasPitcherModel:
         sns.heatmap(corr_matrix, annot=True,cmap='coolwarm',square=True)
         plt.title("Correlation Matrix")
         plt.show()
-    def pitch_plotting(self,data:pd.DataFrame): 
+    def deprecated_pitch_plotting(self,data:pd.DataFrame): 
         
         
         # Create a new figure
@@ -210,7 +210,7 @@ class KerasPitcherModel:
         history = model.fit(
             X_train, 
             y_train,
-            epochs=3,
+            epochs=115,
             batch_size=32,
             validation_data=(X_val, y_val),
             callbacks=[early_stopping]
@@ -252,7 +252,7 @@ class KerasPitcherModel:
 
         
 
-    def setup_pitcher_df(self):
+    def deprecated_setup_pitcher_df(self):
         """
         :param self (int) players id value, important for identifying player and csv location
         """
