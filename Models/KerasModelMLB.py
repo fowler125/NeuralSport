@@ -158,9 +158,9 @@ class KerasPitcherModel:
 
         print(pitcher_df_X.shape)
         print(pitcher_df_Y.shape)
-        print(self.correlation_matrix(pitcher_df_X))
+        #print(self.correlation_matrix(pitcher_df_X))
 
-        print(self.pitcher_plotting(pitcher_unclean))
+        #print(self.pitcher_plotting(pitcher_unclean))
         
         le = LabelEncoder()
         pitcher_df_Y = le.fit_transform(pitcher_df_Y)
@@ -210,7 +210,7 @@ class KerasPitcherModel:
         history = model.fit(
             X_train, 
             y_train,
-            epochs=115,
+            epochs=100,
             batch_size=32,
             validation_data=(X_val, y_val),
             callbacks=[early_stopping]
@@ -239,15 +239,35 @@ class KerasPitcherModel:
         plt.show()
 
          
-        '''# Get the predicted values
+        # Get the predicted values
         predicted_values = model.predict(pitcher_df_X)
+
+        predicted_values = model.predict(pitcher_df_X)
+        predicted_zone = np.argmax(predicted_values, axis=1)
+        predicted_df = pd.DataFrame(predicted_values, columns=[f'Zone {i}' for i in range(1, 14)])
         
-        # Print out the actual values and predicted values
+        predicted_zone = np.argmax(predicted_values, axis=1)
+        max_probabilities = np.max(predicted_values, axis=1)
+
+        zone_df = pd.DataFrame({
+            'Actual Zone': pitcher_df_Y,
+            'Predicted Zone': predicted_zone,
+            'Highest Probability': max_probabilities
+        })
+
+        print(zone_df)
+        zone_df.to_csv(f'data/predictions/{self.id}.csv', index=False)
+        
+        """for i, prob in enumerate(max_probabilities):
+            print(f'Pitch {i}: Highest probability zone is Zone {predicted_zone[i]} with probability {prob:.2f}')
+        """
+        """# Print out the actual values and predicted values
         for i in range(len(pitcher_df_Y)):
             print(f"Actual value: {pitcher_df_Y[i]}")
             print(f"Predicted value: {predicted_values[i]}")
             print()
-        '''
+            """
+        
         
 
         
