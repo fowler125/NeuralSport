@@ -8,7 +8,7 @@ from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import LabelEncoder
 from keras.callbacks import EarlyStopping
 import matplotlib.image as mpimg
-
+from sklearn.metrics import confusion_matrix,ConfusionMatrixDisplay
 features_dict = {
     "reduced":["vx0","vy0","vz0","ax","ay","az"],
     "full":["pitch_type","release_speed","release_pos_x","release_pos_z","spin_dir",
@@ -17,7 +17,6 @@ features_dict = {
             "on_3b","on_2b","on_1b","outs_when_up","inning","vx0","vy0","vz0","ax","ay","az","sz_top",
             "sz_bot","release_spin_rate","release_extension","release_pos_y","at_bat_number",
             "pitch_number","pitch_name","spin_axis"],
-    "velocity":["vx0","vy0","vz0"],
     "numerical_only":["vx0","vy0","vz0","ax","ay","az","plate_x","plate_z"],
     "plotting_data":["vx0","vy0","vz0","ax","ay","az","pfx_x","pfx_z","plate_x","plate_z","sz_top","sz_bot"]
 }
@@ -44,21 +43,18 @@ class KerasPitcherModel:
         z_min = data['plate_z'].min()
 
         # Plot the points
-        sns.scatterplot(x='plate_x', y='plate_z', hue='type', data=data, alpha=0.5, ax=ax)
+        sns.scatterplot(x='plate_x', y='plate_z', hue='type', data=data, alpha=0.5, ax=ax,palette=['green','red','dodgerblue'])
 
         # Plot the strike zone rectangle
         strike_zone_rect = plt.Rectangle((-0.7083, data_filter['sz_bot'].median()), 1.4166, data['sz_top'].median() - data['sz_bot'].median(), alpha=0.5, edgecolor='black', facecolor='none', linewidth=2)
         ax.add_patch(strike_zone_rect)
-        """ax.add_patch(plt.Rectangle((-0.7083, data['sz_bot'].median()), 
-                                   1.4166, data['sz_top'].median() - data['sz_bot'].median(), 
-                                   alpha=0, edgecolor='black', facecolor='none', linewidth=2))"""
+        
+        
         # Set the title and labels
         ax.set_title('Called Balls and Strikes')
         ax.set_xlabel('Horizontal Position')
         ax.set_ylabel('Vertical Position')
 
-        # Set the color palette
-        sns.set_palette(['lightskyblue', 'cornflowerblue'])
 
         # Set the aspect ratio
         ax.set_aspect('equal')
@@ -70,12 +66,22 @@ class KerasPitcherModel:
         plt.rcParams['font.family'] = 'serif'
         plt.show()
 
+
         # Facet by type
         for type in data_filter['type'].unique():
             fig, ax = plt.subplots(figsize=(8, 8))
-            sns.scatterplot(x='plate_x', y='plate_z', hue='type', data=data_filter[data_filter['type'] == type], alpha=0.5, ax=ax,legend="full")
+            
             ax.add_patch(plt.Rectangle((-0.7083, data_filter['sz_bot'].median()), 1.4166, data_filter['sz_top'].median() - data_filter['sz_bot'].median(), alpha=0.5, edgecolor='gray', facecolor='none', linewidth=2))
-            ax.set_title(type)
+            if type == 'S':
+                sns.scatterplot(x='plate_x', y='plate_z', hue='type', data=data_filter[data_filter['type'] == type], alpha=0.5, ax=ax,palette=['tomato'],legend="full")
+               
+                ax.set_title('Called Strikes')
+                
+            elif type == 'B':
+                sns.scatterplot(x='plate_x', y='plate_z', hue='type', data=data_filter[data_filter['type'] == type], alpha=0.5, ax=ax,palette=['dodgerblue'],legend="full")
+            
+                ax.set_title('Called Balls')
+                
             ax.set_xlabel('Horizontal Position')
             ax.set_ylabel('Vertical Position')
             ax.set_aspect('equal')
@@ -86,7 +92,7 @@ class KerasPitcherModel:
         pitcher_df = pd.read_csv(f"data/clean/{self.id}.csv")
         pitcher_unclean = pd.read_csv(f"data/unclean/{self.id}.csv")
         
-        pitcher_df_X = pitcher_df[features_dict["numerical_only"]]
+        pitcher_df_X = pitcher_df[features_dict["plotting_data"]]
         pitcher_df_X = pitcher_df_X.dropna(how="any")
         
         pitcher_df_Y = pitcher_df[["zone"]]
@@ -103,6 +109,7 @@ class KerasPitcherModel:
         pitcher_df_Y = le.fit_transform(pitcher_df_Y)
 
         print(len(pitcher_df_X.columns))
+        
         #pitcher_df_X = pd.get_dummies(pitcher_df_X, columns=["pitch_type", "stand", "p_throws","type","pitch_name"])
         #X_train, X_val, y_train, y_val = train_test_split(pitcher_df_X, pitcher_df_Y, test_size=0.3)
 
@@ -130,7 +137,8 @@ class KerasPitcherModel:
 
         StrikeZone = layers.Dense(13)(x)
 
-        model = keras.Model(inputs=test, outputs=StrikeZone, name="mnist_model")
+        model = keras.Model(inputs=test, outputs=StrikeZone, 
+                            name="mnist_model")
 
         model.compile(
             loss=keras.losses.SparseCategoricalCrossentropy(from_logits=True),
@@ -178,8 +186,6 @@ class KerasPitcherModel:
          
         # Get the predicted values
         predicted_values = model.predict(pitcher_df_X)
-
-        predicted_values = model.predict(pitcher_df_X)
         predicted_zone = np.argmax(predicted_values, axis=1)
         predicted_df = pd.DataFrame(predicted_values, columns=[f'Zone {i}' for i in range(1, 14)])
         
@@ -194,24 +200,13 @@ class KerasPitcherModel:
 
         print(zone_df)
         zone_df.to_csv(f'data/predictions/{self.id}.csv', index=False)
-        
-        """for i, prob in enumerate(max_probabilities):
-            print(f'Pitch {i}: Highest probability zone is Zone {predicted_zone[i]} with probability {prob:.2f}')
-        """
-        """# Print out the actual values and predicted values
-        for i in range(len(pitcher_df_Y)):
-            print(f"Actual value: {pitcher_df_Y[i]}")
-            print(f"Predicted value: {predicted_values[i]}")
-            print()
-            """
-        
-        
 
-        
+        cm = confusion_matrix(pitcher_df_Y, predicted_zone)
+        cm_display = ConfusionMatrixDisplay(cm).plot()
 
+        cm_display.ax_.set(title='Confusion Matrix', xlabel='Predicted Zone', ylabel='True Zone')
 
-
-
+        plt.show()
 
 
 p1 = KerasPitcherModel(656302)
