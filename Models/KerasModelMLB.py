@@ -9,6 +9,7 @@ from sklearn.preprocessing import LabelEncoder
 from keras.callbacks import EarlyStopping
 import matplotlib.image as mpimg
 from sklearn.metrics import confusion_matrix,ConfusionMatrixDisplay
+from sklearn.linear_model import LogisticRegression
 features_dict = {
     "reduced":["vx0","vy0","vz0","ax","ay","az"],
     "full":["pitch_type","release_speed","release_pos_x","release_pos_z","spin_dir",
@@ -88,6 +89,29 @@ class KerasPitcherModel:
             ax.get_legend().remove()
             plt.show()
 
+
+    def setup_logistic_regression(self,pitcher_df):
+        # Define the features (X) and target (y)
+        X = pitcher_df[features_dict["plotting_data"]]
+        X = X.dropna(how="any")
+        y = pitcher_df["zone"]
+        y = y.dropna(how="any")
+
+        # Encode the target variable
+        le = LabelEncoder()
+        y = le.fit_transform(y)
+
+        # Split the data into training and testing sets
+        X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+
+        # Create a logistic regression model
+        logreg = LogisticRegression(max_iter=5000)
+
+        # Train the model
+        logreg.fit(X_train, y_train)
+
+        # Return the trained model and the testing data
+        return logreg, X_test, y_test
     def new_setup(self):
         pitcher_df = pd.read_csv(f"data/clean/{self.id}.csv")
         pitcher_unclean = pd.read_csv(f"data/unclean/{self.id}.csv")
@@ -207,6 +231,15 @@ class KerasPitcherModel:
         cm_display.ax_.set(title='Confusion Matrix', xlabel='Predicted Zone', ylabel='True Zone')
 
         plt.show()
+        
+        logreg, X_test, y_test = self.setup_logistic_regression(pitcher_df)
+        
+        # Make predictions on the testing data
+        y_pred = logreg.predict(X_test)
+        
+        # Evaluate the model's performance
+        accuracy = logreg.score(X_test, y_test)
+        print(f"Accuracy: {accuracy:.4f}")
 
 
 p1 = KerasPitcherModel(656302)

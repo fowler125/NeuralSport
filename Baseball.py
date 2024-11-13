@@ -3,7 +3,8 @@ from pybaseball import playerid_lookup
 from pybaseball import statcast_pitcher
 from pybaseball import pitching_stats
 from pybaseball import batting_stats_range
-from Models import KerasModelMLB
+from pybaseball import pitching_stats_range
+#from Models import KerasModelMLB
 import pandas as pd
 
 
@@ -38,7 +39,9 @@ def playerIDLookup(lastname,firstname=None,fuzz=False) -> pd.DataFrame:
     else:
         return data
     
-
+def grabPitchStats():
+    data = pitching_stats_range("2024-03-20", "2024-09-30")
+    data.to_csv(f"data/unclean/pitch_stats_2024.csv")
 
 def main():
     pd.set_option('display.max_columns', None)
@@ -48,10 +51,13 @@ def main():
     
     #use player id lookup to grab the id of the player which is needed for looking up the stats via statcast
     #lastname require, firstname optional, fuzz for possible discrepencies in name
-    player_lookup_df = playerIDLookup('cease','dylan')
+    """player_lookup_df = playerIDLookup('cease','dylan')
     id = player_lookup_df["key_mlbam"].values[0]
     print(id)
     grabStatCast(opening_day,today,playerID=id)
+    """
+    
+    grabPitchStats()
     
     
     #pitcher = KerasModelMLB(id)
