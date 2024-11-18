@@ -3,21 +3,60 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>NFT Marketplace</title>
-  <link rel="stylesheet" href="frontend/style.css">
+  <title>Neural Sport - Player Profiles</title>
+  <link rel="stylesheet" href="profile_style.css">
 </head>
 <body>
-  <header>
-    <nav>
-      <ul>
-        <li><a href="#">Home</a></li>
-        <li><a href="#">Login</a></li>
-        <li><a href="#">Features</a></li>
-        <li><a href="#">Sports</a></li>
-        <li><a href="#">About Us</a></li>
-      </ul>
-    </nav>
-  </header>
+  <nav>
+    <a href="#" class="logo">Neural Sport</a>
+    <div class="links">
+        <a href="/frontend/index.html">Home</a>
+        <a href="#">Features</a>
+        <a href="#">Sports</a>
+        <a href="#">About Us</a>
+    </div>
+    <div class="login">
+        <button class="signup">Get Started</button>
+        <button>Login</button>
+    </div>
+  </nav>
+  <!-- Player Profile Content -->
+  <div class="profile-container">
+    <img id="player-image" src="" alt="Player Profile">
+    <div>
+      <h1 id="player-name"></h1>
+      <div id="player-stats" class="stats-container"></div>
+    </div>
+  </div>
 
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const urlParams = new URLSearchParams(window.location.search);
+      const playerName = urlParams.get('player');
+      if (playerName) {
+        const playerNameElement = document.getElementById('player-name');
+        playerNameElement.textContent = playerName;
+
+        const playerImageElement = document.getElementById('player-image');
+        playerImageElement.src = '/frontend/assets/' + playerName + '.png';
+      }
+    });
+  </script>
+
+  <!-- Footer (reused from main page) -->
+  <footer>
+    <div class="right">
+        <div class="links">
+            <a href="#">Privacy Policy</a>
+            <a href="#">Cooperation</a>
+            <a href="#">Sponsorship</a>
+            <a href="#">Contact Us</a>
+        </div>
+        <div class="social"></div>
+        <p>Copyright © 2024 NeuralSport, All Rights Reserved.</p>
+    </div>
+  </footer>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.0/papaparse.min.js"></script>
+  <script src="profiles.js"></script>
 </body>
 </html>

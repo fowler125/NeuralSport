@@ -10,6 +10,7 @@ from keras.callbacks import EarlyStopping
 import matplotlib.image as mpimg
 from sklearn.metrics import confusion_matrix,ConfusionMatrixDisplay
 from sklearn.linear_model import LogisticRegression
+from hyperpar_tuning import PitchingTuner
 features_dict = {
     "reduced":["vx0","vy0","vz0","ax","ay","az"],
     "full":["pitch_type","release_speed","release_pos_x","release_pos_z","spin_dir",
@@ -125,14 +126,14 @@ class KerasPitcherModel:
 
         print(pitcher_df_X.shape)
         print(pitcher_df_Y.shape)
-        print(self.correlation_matrix(pitcher_df_X))
+        #print(self.correlation_matrix(pitcher_df_X))
 
-        print(self.pitcher_plotting(pitcher_unclean))
+        #print(self.pitcher_plotting(pitcher_unclean))
         
         le = LabelEncoder()
         pitcher_df_Y = le.fit_transform(pitcher_df_Y)
 
-        print(len(pitcher_df_X.columns))
+        print('Number of features: ',len(pitcher_df_X.columns))
         
         #pitcher_df_X = pd.get_dummies(pitcher_df_X, columns=["pitch_type", "stand", "p_throws","type","pitch_name"])
         #X_train, X_val, y_train, y_val = train_test_split(pitcher_df_X, pitcher_df_Y, test_size=0.3)
@@ -141,26 +142,30 @@ class KerasPitcherModel:
         X_train, X_val, y_train, y_val = train_test_split(pitcher_df_X, pitcher_df_Y, test_size=0.3, random_state=42)
         X_val, X_test, y_val, y_test = train_test_split(X_val, y_val, test_size=0.5, random_state=42)
         
-            
-            # - X_train: training data
-            # - y_train: training labels
-            # - X_val: validation data
-            # - y_val: validation labels
-            # - X_test: testing data
-            # - y_test: testing labels
-
-        test = keras.Input(shape = (pitcher_df_X.shape[1],))
-        """
-        Relu (rectified linear unit) activation function
+         # Initialize the tuner with input and output shapes
+        tuner = PitchingTuner(
+            input_shape=(pitcher_df_X.shape[1],),
+            output_shape=13
+        )
     
-        -   an activation function is a layer in a neural network that introduces non-linearity to the model
-        -   It takes the output of the previous layer, applies a non-linear transformation, and returns the transformed output
+        # Perform hyperparameter tuning
+        best_hps, best_model = tuner.tune_model(
+            X_train=X_train,
+            y_train=y_train,
+            X_val=X_val,
+            y_val=y_val,
+            project_name=f'pitcher_{self.id}_tuning'
+        )
         """
+        test = keras.Input(shape = (pitcher_df_X.shape[1],))
+       
         dense = layers.Dense(64, activation="relu")
-        x = dense(test)
+        dense2 = layers.Dense(32, activation="relu")
+        x = dense2(test)
 
-        StrikeZone = layers.Dense(13)(x)
+        #StrikeZone = layers.Dense(13)(x)
 
+        
         model = keras.Model(inputs=test, outputs=StrikeZone, 
                             name="mnist_model")
 
@@ -169,24 +174,24 @@ class KerasPitcherModel:
             optimizer=keras.optimizers.RMSprop(),
             metrics=["accuracy"],
         )
-
+"""
         early_stopping = EarlyStopping(
             patience=30,        #number of epochs to wait before stopping
             min_delta = 0.001,  #min value to consider an improvement
             restore_best_weights=True
         )
 
-        history = model.fit(
+        history = best_model.fit(
             X_train, 
             y_train,
-            epochs=100,
+            epochs=500,
             batch_size=32,
             validation_data=(X_val, y_val),
             callbacks=[early_stopping]
         )
 
-        test_loss, test_acc = model.evaluate(X_test, y_test)
-        print(f"Test accuracy: {test_acc:.4f}")
+        test_loss, test_acc = best_model.evaluate(X_test, y_test)
+        print(f"Test accuracy: {test_acc:.4f}") 
 
 
         # Plot training and validation accuracy values
@@ -209,7 +214,7 @@ class KerasPitcherModel:
 
          
         # Get the predicted values
-        predicted_values = model.predict(pitcher_df_X)
+        predicted_values = best_model.predict(pitcher_df_X)
         predicted_zone = np.argmax(predicted_values, axis=1)
         predicted_df = pd.DataFrame(predicted_values, columns=[f'Zone {i}' for i in range(1, 14)])
         
@@ -241,6 +246,8 @@ class KerasPitcherModel:
         accuracy = logreg.score(X_test, y_test)
         print(f"Accuracy: {accuracy:.4f}")
 
+        
 
-p1 = KerasPitcherModel(656302)
+
+p1 = KerasPitcherModel(554430)
 p1.new_setup()
