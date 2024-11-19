@@ -57,6 +57,7 @@ function displayPlayerStats(stats) {
     <div class="stat-box"><p>ERA: ${stats.ERA}</p></div>
     <div class="stat-box"><p>Strikeouts: ${stats.SO}</p></div>
     <div class="stat-box"><p>Innings Pitched: ${stats.IP}</p></div>
+    <div class="stat-box"><p>mlbID: ${stats.mlbID}</p></div>
     <!-- Add more stats as needed -->
   `;
 }

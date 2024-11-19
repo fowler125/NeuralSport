@@ -60,7 +60,7 @@ nav .login button.signup{
     background-color: #fff;
     border-radius: 10px;
     margin: 0px 200px;
-    margin-bottom: 200px;
+    
     padding: 20px;
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.518);
     transition: all 0.3s ease;
@@ -93,6 +93,76 @@ nav .login button.signup{
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
     text-align: center;
     min-width: 100px;
+}
+.pitch-arsenal-container {
+    background-color: #fff;
+    border-radius: 10px;
+    margin: 20px 200px;
+    padding: 20px;
+    max-width: 400px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.518);
+    transition: all 0.3s ease;
+    justify-content: center;
+    align-items: center;
+
+}
+
+.pitch-arsenal {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 10px;
+    align-items: center;
+    justify-content: center;
+}
+
+.pitch-box {
+    background-color: #f0f0f0;
+    border-radius: 5px;
+    padding: 10px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    min-width: 100px;
+}
+.pitch-ff {
+    background-color: #4a90e2; /* Four-Seam Fastball */
+}
+
+.pitch-si {
+    background-color: #50e3c2; /* Sinker */
+}
+
+.pitch-fc {
+    background-color: #f5a623; /* Cutter */
+}
+
+.pitch-sl {
+    background-color: #d0021b; /* Slider */
+}
+
+.pitch-ch {
+    background-color: #cf813d; /* Changeup */
+}
+
+.pitch-cu {
+    background-color: #7ed321; /* Curveball */
+}
+
+.pitch-fs {
+    background-color: #bd10e0; /* Splitter */
+}
+
+.pitch-kn {
+    background-color: #9013fe; /* Knuckleball */
+}
+
+.pitch-st {
+    background-color: #f8e71c; /* Strike */
+    color: #000; /* Dark text color for better contrast */
+}
+
+.pitch-sv {
+    background-color: #b8e986; /* Screwball */
 }
 .player-header {
     text-align: center;
