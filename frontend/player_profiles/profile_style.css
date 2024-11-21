@@ -69,6 +69,8 @@ nav .login button.signup{
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.518);
     transition: all 0.3s ease;
     margin-bottom: 20px;
+    max-width: fit-content;
+    align-self: center;
 }
 
 .profile-container img{
@@ -139,6 +141,8 @@ nav .login button.signup{
     align-items: center;
     justify-items: center;
     padding-bottom: 25px;
+    align-self: center;
+    
 }
 .model-container {
     background-color: #fff;
@@ -175,6 +179,12 @@ nav .login button.signup{
     width: 100%;
     height: 100%;
 }
+canvas {
+    display: block;
+    margin: 20px auto;
+    width:auto;
+    height: auto;
+  }
 
 .pitch-box {
     background-color: #f0f0f0;

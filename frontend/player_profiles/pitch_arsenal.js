@@ -46,7 +46,7 @@ const pitchTypeMapping = {
   n_cu: 'Curveball',
   n_fs: 'Splitter',
   n_kn: 'Knuckleball',
-  n_st: 'Strike',
+  n_st: 'Sweeper',
   n_sv: 'Screwball'
 };
 

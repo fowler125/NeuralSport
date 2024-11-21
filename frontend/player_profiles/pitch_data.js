@@ -14,9 +14,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
 const pitchTypeColors = {
   'FF': 'blue',
-  'CU': 'blue',
-  'SL': 'green',
-  'CH': 'orange',
+  'CU': 'orange',
+  'SL': 'red',
+  'CH': 'brown',
   'FC': 'purple',
   'SI': 'cyan',
   'KN': 'pink',
@@ -69,7 +69,7 @@ function createPitchZone(data) {
     .attr('cy', d => yScale(d.plate_z))
     .attr('r', 5)
     .attr('fill', d => pitchTypeColors[d.pitch_type] || 'gray') // Use the color mapping
-    .attr('opacity', 0.5);
+    .attr('opacity', 0.2);
   
     // Add the strike zone rectangle
   svg.append('rect')
@@ -79,4 +79,6 @@ function createPitchZone(data) {
   .attr('height', yScale(1.5) - yScale(3.5))
   .attr('stroke', 'black')
   .attr('fill', 'none');
+
+  
 }

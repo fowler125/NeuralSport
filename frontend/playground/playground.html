@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Updated Heatmap</title>
+    <style>
+        canvas {
+            display: block;
+            margin: 20px auto;
+            border: 1px solid #ddd;
+        }
+    </style>
+</head>
+<body>
+
+<canvas id="heatmapCanvas" width="300" height="300"></canvas>
+
+<script>
+    const canvas = document.getElementById("heatmapCanvas");
+    const ctx = canvas.getContext("2d");
+
+    // Colors for different zones
+    const colors = {
+        lightBlue: "#a7c7e7",
+        lightRed: "#ffb3b3",
+        darkBlue: "#6b8eb5",
+        darkRed: "#f28a8a",
+        white: "#ffffff",
+    };
+
+    // Grid data (values and corresponding background colors)
+    const grid = [
+        [ { value: 137, color: colors.lightBlue }, { value: 195, color: colors.darkBlue }, { value: 162, color: colors.lightBlue } ],
+        [ { value: 160, color: colors.lightBlue }, { value: 252, color: colors.lightRed }, { value: 217, color: colors.lightBlue } ],
+        [ { value: 112, color: colors.darkBlue }, { value: 194, color: colors.white }, { value: 142, color: colors.darkBlue } ],
+    ];
+
+    // Margins and dimensions for grid
+    const margin = 30; // space for grid around the canvas
+    const cellSize = 70; // size of each grid cell
+
+    // Function to draw the heatmap grid and the background quadrants
+    function drawHeatmap() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height); // Clear the canvas
+
+        // Draw the background quadrants
+        const quadrantSize = cellSize * 3;
+        const centerX = margin + quadrantSize / 2;
+        const centerY = margin + quadrantSize / 2;
+
+        ctx.strokeStyle = "#ddd";
+        ctx.lineWidth = 2;
+
+        // Draw the full square
+        ctx.strokeRect(margin, margin, quadrantSize, quadrantSize);
+
+        // Draw the vertical divider
+        ctx.beginPath();
+        ctx.moveTo(centerX, margin);
+        ctx.lineTo(centerX, margin + quadrantSize);
+        ctx.stroke();
+
+        // Draw the horizontal divider
+        ctx.beginPath();
+        ctx.moveTo(margin, centerY);
+        ctx.lineTo(margin + quadrantSize, centerY);
+        ctx.stroke();
+
+        // Draw the heatmap grid
+        for (let row = 0; row < grid.length; row++) {
+            for (let col = 0; col < grid[row].length; col++) {
+                const x = margin + col * cellSize;
+                const y = margin + row * cellSize;
+
+                // Fill cell background
+                ctx.fillStyle = grid[row][col].color;
+                ctx.fillRect(x, y, cellSize, cellSize);
+
+                // Draw value
+                ctx.fillStyle = "black";
+                ctx.font = "bold 14px Arial";
+                ctx.textAlign = "center";
+                ctx.textBaseline = "middle";
+                ctx.fillText(grid[row][col].value, x + cellSize / 2, y + cellSize / 2);
+            }
+        }
+
+        // Draw grid lines
+        ctx.strokeStyle = "black";
+        for (let i = 0; i <= 3; i++) {
+            // Vertical lines
+            ctx.beginPath();
+            ctx.moveTo(margin + i * cellSize, margin);
+            ctx.lineTo(margin + i * cellSize, margin + 3 * cellSize);
+            ctx.stroke();
+
+            // Horizontal lines
+            ctx.beginPath();
+            ctx.moveTo(margin, margin + i * cellSize);
+            ctx.lineTo(margin + 3 * cellSize, margin + i * cellSize);
+            ctx.stroke();
+        }
+    }
+
+    // Initial drawing
+    drawHeatmap();
+</script>
+
+</body>
+</html>
