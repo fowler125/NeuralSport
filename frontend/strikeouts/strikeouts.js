@@ -8,6 +8,7 @@ async function loadStrikeoutLeaders() {
         // Parse CSV data
         const rows = data.split('\n');
         const headers = rows[0].split(',');
+        const specialCharRegex = /[^\x00-\x7F]/;
         
         const players = rows.slice(1) // Skip header row
             .filter(row => row.trim() !== '') // Filter out empty rows
@@ -16,14 +17,15 @@ async function loadStrikeoutLeaders() {
                 const columns = row.match(/(".*?"|[^",\s]+)(?=\s*,|\s*$)/g); // Regex to handle commas inside quotes
                 const rawName = columns[1].replace(/^\d+,/, ''); // Remove leading number if present
                 
-                if(name.includes('\xc3\xb3')){
-                    name = name.replace('\xc3\xb3', 'ó');
+                if(specialCharRegex.test(name)){
+                    console.log('Special character found in name:', name);
                 }
                 
                 let teams = columns[5].replace(/"/g, ''); // Remove extra quotes if present
                 if (teams.includes(',')) {
                     teams = teams.split(',').join(' / '); // Join multiple teams with " / "
                 }
+                
 
                 return {
                     name: name,
@@ -38,7 +40,7 @@ async function loadStrikeoutLeaders() {
                 };
             })
             .filter(player => player.strikeouts > 0); // Filter out players with 0 or NaN strikeouts
-
+            console.log(players);
         // Display players as usual
         displayPlayers(players.slice(0, 10));
 

@@ -21,14 +21,27 @@
     </div>
   </nav>
   <!-- Player Profile Content -->
-  <div class="profile-container">
-    <img id="player-image" src="" alt="Player Profile">
-    <div>
-      <h1 id="player-name"></h1>
-      <div id="player-stats" class="stats-container"></div>
+  <div class="content-container">
+    <div class="profile-container">
+      <img id="player-image" src="" alt="Player Profile">
+      <div>
+        <h1 id="player-name"></h1>
+        <div id="player-stats" class="stats-container"></div>
+      </div>
     </div>
+    <div class="arsenal-and-model-container">
+      <div id="pitch-arsenal-container" class="pitch-arsenal-container">
+        <h2 class="centered-title">Pitch Arsenal</h2>
+      </div>
+      <div class="model-container">
+        <h2 class="centered-title">Spray Chart</h2>
+      </div>
+      <div class="zone-graphic-container">
+        <h2 class="centered-title">Zone Graphic</h2>
+        <div id="zone-graphic"></div>
+    </div>
+    
   </div>
-  <div id="pitch-arsenal-container" class="pitch-arsenal-container"></div>
 
   <script>
     document.addEventListener('DOMContentLoaded', () => {
@@ -43,6 +56,9 @@
       }
     });
   </script>
+
+  <script src="https://d3js.org/d3.v7.min.js"></script>
+  <script src="pitch_data.js"></script>
 
   <!-- Footer (reused from main page) -->
   <footer>

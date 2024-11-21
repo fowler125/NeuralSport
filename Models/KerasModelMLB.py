@@ -27,10 +27,15 @@ class KerasPitcherModel:
         self.id = id
 
     def correlation_matrix(self,data:pd.DataFrame):
+        #Create Correlation Matrix to show linear relationships between variables
         corr_matrix = data.corr()
+        
         plt.figure(figsize=(10,8))
+        
         sns.heatmap(corr_matrix, annot=True,cmap='coolwarm',square=True)
+        
         plt.title("Correlation Matrix")
+        
         plt.show()
         
     def pitcher_plotting(self,data:pd.DataFrame):
@@ -61,9 +66,6 @@ class KerasPitcherModel:
         # Set the aspect ratio
         ax.set_aspect('equal')
 
-        # Remove the legend
-        #ax.get_legend().remove()
-
         # Set the font family
         plt.rcParams['font.family'] = 'serif'
         plt.show()
@@ -90,7 +92,6 @@ class KerasPitcherModel:
             ax.get_legend().remove()
             plt.show()
 
-
     def setup_logistic_regression(self,pitcher_df):
         # Define the features (X) and target (y)
         X = pitcher_df[features_dict["plotting_data"]]
@@ -113,6 +114,39 @@ class KerasPitcherModel:
 
         # Return the trained model and the testing data
         return logreg, X_test, y_test
+    
+    def confusion_matrix(self,data_Y,predicted_Y):
+        #Create a confusion matrix, actual zone vs predicted zone
+        cm = confusion_matrix(data_Y, predicted_Y)
+        
+        cm_display = ConfusionMatrixDisplay(cm).plot()
+        
+        cm_display.ax_.set(title='Confusion Matrix', xlabel='Predicted Zone', ylabel='True Zone')
+
+        plt.show()
+
+    def accuracy_plotting(self,history):
+        # Plot training and validation accuracy values
+        plt.plot(history.history["accuracy"])
+        plt.plot(history.history["val_accuracy"])
+        plt.title("Model accuracy")
+        plt.ylabel("Accuracy")
+        plt.xlabel("Epoch")
+        plt.legend(["Train", "Val"], loc="upper left")
+        plt.show()
+    
+    def loss_plotting(self,history):
+        # Plot training and validation loss values
+        plt.plot(history.history["loss"])
+        plt.plot(history.history["val_loss"])
+        plt.title("Model loss")
+        plt.ylabel("Loss")
+        plt.xlabel("Epoch")
+        plt.legend(["Train", "Val"], loc="upper left")
+        plt.show()
+    
+    
+    
     def new_setup(self):
         pitcher_df = pd.read_csv(f"data/clean/{self.id}.csv")
         pitcher_unclean = pd.read_csv(f"data/unclean/{self.id}.csv")
@@ -123,20 +157,14 @@ class KerasPitcherModel:
         pitcher_df_Y = pitcher_df[["zone"]]
         pitcher_df_Y = pitcher_df_Y.dropna(how="any")
         
+        self.correlation_matrix(pitcher_df_X)
 
-        print(pitcher_df_X.shape)
-        print(pitcher_df_Y.shape)
-        #print(self.correlation_matrix(pitcher_df_X))
-
-        #print(self.pitcher_plotting(pitcher_unclean))
+        self.pitcher_plotting(pitcher_unclean)
         
         le = LabelEncoder()
         pitcher_df_Y = le.fit_transform(pitcher_df_Y)
 
-        print('Number of features: ',len(pitcher_df_X.columns))
-        
-        #pitcher_df_X = pd.get_dummies(pitcher_df_X, columns=["pitch_type", "stand", "p_throws","type","pitch_name"])
-        #X_train, X_val, y_train, y_val = train_test_split(pitcher_df_X, pitcher_df_Y, test_size=0.3)
+        print('Number of features: ', len(pitcher_df_X.columns))
 
         
         X_train, X_val, y_train, y_val = train_test_split(pitcher_df_X, pitcher_df_Y, test_size=0.3, random_state=42)
@@ -193,25 +221,10 @@ class KerasPitcherModel:
         test_loss, test_acc = best_model.evaluate(X_test, y_test)
         print(f"Test accuracy: {test_acc:.4f}") 
 
+        # Plot the training history
+        self.accuracy_plotting(history)
 
-        # Plot training and validation accuracy values
-        plt.plot(history.history["accuracy"])
-        plt.plot(history.history["val_accuracy"])
-        plt.title("Model accuracy")
-        plt.ylabel("Accuracy")
-        plt.xlabel("Epoch")
-        plt.legend(["Train", "Val"], loc="upper left")
-        plt.show()
-
-        # Plot training and validation loss values
-        plt.plot(history.history["loss"])
-        plt.plot(history.history["val_loss"])
-        plt.title("Model loss")
-        plt.ylabel("Loss")
-        plt.xlabel("Epoch")
-        plt.legend(["Train", "Val"], loc="upper left")
-        plt.show()
-
+        self.loss_plotting(history)
          
         # Get the predicted values
         predicted_values = best_model.predict(pitcher_df_X)
@@ -230,13 +243,10 @@ class KerasPitcherModel:
         print(zone_df)
         zone_df.to_csv(f'data/predictions/{self.id}.csv', index=False)
 
-        cm = confusion_matrix(pitcher_df_Y, predicted_zone)
-        cm_display = ConfusionMatrixDisplay(cm).plot()
+        # Create a confusion matrix
+        self.confusion_matrix(pitcher_df_Y, predicted_zone)
 
-        cm_display.ax_.set(title='Confusion Matrix', xlabel='Predicted Zone', ylabel='True Zone')
-
-        plt.show()
-        
+        #Logistic Regression Comparison
         logreg, X_test, y_test = self.setup_logistic_regression(pitcher_df)
         
         # Make predictions on the testing data
@@ -249,5 +259,5 @@ class KerasPitcherModel:
         
 
 
-p1 = KerasPitcherModel(554430)
+p1 = KerasPitcherModel(656302)
 p1.new_setup()
