@@ -184,25 +184,7 @@ class KerasPitcherModel:
             y_val=y_val,
             project_name=f'pitcher_{self.id}_tuning'
         )
-        """
-        test = keras.Input(shape = (pitcher_df_X.shape[1],))
        
-        dense = layers.Dense(64, activation="relu")
-        dense2 = layers.Dense(32, activation="relu")
-        x = dense2(test)
-
-        #StrikeZone = layers.Dense(13)(x)
-
-        
-        model = keras.Model(inputs=test, outputs=StrikeZone, 
-                            name="mnist_model")
-
-        model.compile(
-            loss=keras.losses.SparseCategoricalCrossentropy(from_logits=True),
-            optimizer=keras.optimizers.RMSprop(),
-            metrics=["accuracy"],
-        )
-"""
         early_stopping = EarlyStopping(
             patience=30,        #number of epochs to wait before stopping
             min_delta = 0.001,  #min value to consider an improvement

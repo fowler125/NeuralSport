@@ -52,13 +52,11 @@ def main():
     
     # Use player ID lookup to grab the ID of the player which is needed for looking up the stats via statcast
     # Lastname required, firstname optional, fuzz for possible discrepancies in name
-    player_lookup_df = playerIDLookup('skubal', 'tarik')
+    player_lookup_df = playerIDLookup('sale', 'chris')
     id = player_lookup_df["key_mlbam"].values[0]
     print(id)
     grabStatCast(opening_day, today, playerID=id)
     
-    grabPitchStats()
-    statCastArsenal()
     
     # pitcher = KerasModelMLB(id)
     # pitcher.setup_pitcher_df()

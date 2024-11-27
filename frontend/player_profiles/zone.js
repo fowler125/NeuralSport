@@ -25,7 +25,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const backgroundSize = gridSize + 50; // size of the background squares (slightly bigger than the grid)
 
   // Function to draw the heatmap grid and the background quadrants
-  function drawHeatmap() {
+  function drawHeatmap(zoneCounts, totalPitches) {
     ctx.clearRect(0, 0, canvas.width, canvas.height); // Clear the canvas
 
     // Draw the background squares
@@ -33,10 +33,25 @@ document.addEventListener('DOMContentLoaded', () => {
     const centerY = margin + gridSize / 2;
     const halfBackgroundSize = backgroundSize / 2;
 
-    ctx.fillStyle = "#ddd"; // Set fill color for background squares
+    // Calculate the percentage of total pitches for each outside zone
+    const percentages = {
+      11: (zoneCounts[11] / totalPitches) * 100,
+      12: (zoneCounts[12] / totalPitches) * 100,
+      13: (zoneCounts[13] / totalPitches) * 100,
+      14: (zoneCounts[14] / totalPitches) * 100,
+    };
+
+    // Set the fill color for each outside zone based on the percentage
+    ctx.fillStyle = percentages[11] >= 7 ? colors.darkRed : percentages[11] < 5 ? colors.darkBlue : colors.lightRed;
     ctx.fillRect(centerX - halfBackgroundSize, centerY - halfBackgroundSize, halfBackgroundSize, halfBackgroundSize); // Top-left
+
+    ctx.fillStyle = percentages[12] >= 7 ? colors.darkRed : percentages[12] < 5 ? colors.darkBlue : colors.lightRed;
     ctx.fillRect(centerX, centerY - halfBackgroundSize, halfBackgroundSize, halfBackgroundSize); // Top-right
+
+    ctx.fillStyle = percentages[13] >= 7 ? colors.darkRed : percentages[13] < 5 ? colors.darkBlue : colors.lightRed;
     ctx.fillRect(centerX - halfBackgroundSize, centerY, halfBackgroundSize, halfBackgroundSize); // Bottom-left
+
+    ctx.fillStyle = percentages[14] >= 7 ? colors.darkRed : percentages[14] < 5 ? colors.darkBlue : colors.lightRed;
     ctx.fillRect(centerX, centerY, halfBackgroundSize, halfBackgroundSize); // Bottom-right
 
     // Draw stroke lines for the background squares
@@ -53,6 +68,18 @@ document.addEventListener('DOMContentLoaded', () => {
         const cell = grid[row][col];
         const x = margin + col * cellSize;
         const y = margin + row * cellSize;
+        
+        // Calculate the percentage of total pitches for this cell
+        const percentage = (cell.value / totalPitches) * 100;
+
+        // Set the cell color based on the percentage
+        if (percentage >= 7) {
+          cell.color = colors.darkRed;
+        } else if (percentage < 5) {
+          cell.color = colors.darkBlue;
+        } else {
+          cell.color = colors.lightRed; // Default color for other percentages
+        }
 
         // Draw the cell background color
         ctx.fillStyle = cell.color;
@@ -71,35 +98,63 @@ document.addEventListener('DOMContentLoaded', () => {
         ctx.strokeRect(x, y, cellSize, cellSize);
       }
     }
+
+    // Draw the outside zone numbers (11-14)
+    ctx.fillStyle = "#000"; // Text color
+    ctx.font = "16px Arial";
+    ctx.textAlign = "center";
+    ctx.textBaseline = "middle";
+
+    // Zone 11 (Top-left)
+    ctx.fillText(zoneCounts[11], 40, 20);
+
+    // Zone 12 (Top-right)
+    ctx.fillText(zoneCounts[12], 220, 20);
+
+    // Zone 13 (Bottom-left)
+    ctx.fillText(zoneCounts[13], 40, 255);
+
+    // Zone 14 (Bottom-right)
+    ctx.fillText(zoneCounts[14], 220, 255);
+    console.log(zoneCounts[11], zoneCounts[12], zoneCounts[13], zoneCounts[14]);
   }
 
-  // Fetch and parse the CSV file
-  fetch('/data/unclean/Tarik Skubal.csv')
-    .then(response => response.text())
-    .then(data => {
-      const parsedData = d3.csvParse(data);
+  // Fetch and parse the CSV file based on first and last name
+  const urlParams = new URLSearchParams(window.location.search);
+  const playerName = urlParams.get('player');
+  if (playerName) {
+    
 
-      // Count the number of pitches in each zone (0-9)
-      const zoneCounts = Array(10).fill(0);
-      parsedData.forEach(d => {
-        const zone = +d.zone;
-        if (zone >= 0 && zone <= 9) {
-          zoneCounts[zone]++;
-        }
+    fetch(`/data/unclean/${playerName}.csv`)
+      .then(response => response.text())
+      .then(data => {
+        const parsedData = d3.csvParse(data);
+
+        // Count the number of pitches in each zone (1-14)
+        const zoneCounts = Array(15).fill(0);
+        parsedData.forEach(d => {
+          const zone = +d.zone;
+          if (zone >= 1 && zone <= 14) {
+            zoneCounts[zone]++;
+          }
+        });
+
+        const totalPitches = parsedData.length;
+        console.log(totalPitches);
+
+        // Update the grid cells with the counts of pitches in each zone
+        grid[0][0].value = zoneCounts[1];
+        grid[0][1].value = zoneCounts[2];
+        grid[0][2].value = zoneCounts[3];
+        grid[1][0].value = zoneCounts[4];
+        grid[1][1].value = zoneCounts[5];
+        grid[1][2].value = zoneCounts[6];
+        grid[2][0].value = zoneCounts[7];
+        grid[2][1].value = zoneCounts[8];
+        grid[2][2].value = zoneCounts[9];
+
+        // Draw the heatmap
+        drawHeatmap(zoneCounts,totalPitches);
       });
-
-      // Update the grid cells with the counts of pitches in each zone
-      grid[0][0].value = zoneCounts[1];
-      grid[0][1].value = zoneCounts[2];
-      grid[0][2].value = zoneCounts[3];
-      grid[1][0].value = zoneCounts[4];
-      grid[1][1].value = zoneCounts[5];
-      grid[1][2].value = zoneCounts[6];
-      grid[2][0].value = zoneCounts[7];
-      grid[2][1].value = zoneCounts[8];
-      grid[2][2].value = zoneCounts[9];
-
-      // Draw the heatmap
-      drawHeatmap();
-    });
+  }
 });
