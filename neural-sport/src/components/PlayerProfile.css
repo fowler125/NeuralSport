@@ -1,0 +1,256 @@
+@import url('https://fonts.googleapis.com/css2?family=Ubuntu:wght@300;400;500;700&display=swap');
+
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Ubuntu', sans-serif;
+}
+
+a{
+    text-decoration: none;
+    color: #000;
+}
+
+img{
+    object-fit: cover;
+}
+
+body{
+    font-family: 'Ubuntu', sans-serif;
+    margin: 0;
+    padding: 0;
+}
+
+nav{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 80px;
+    height: 80px;
+    background-color: #fff;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+nav .logo{
+    font-size: 33px;
+    color: orange;
+    font-weight: 600;
+}
+
+nav .links a {
+    margin-right: 20px;
+    text-decoration: none;
+    color: #333;
+}
+
+nav .login button{
+    padding: 8px 14px;
+    border: none;
+    cursor: pointer;
+    background-color: transparent;
+    font-size: 16px;
+}
+
+nav .login button.signup{
+    background-color: #000;
+    color: #fff;
+    border-radius: 4px;
+    margin-right: 14px;
+}
+
+.profile-container {
+    display: flex;
+    flex-direction: row;
+    align-items: flex-start;
+    background-color: #fff;
+    border-radius: 10px;
+    padding: 20px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.518);
+    transition: all 0.3s ease;
+    margin-bottom: 20px;
+    max-width: fit-content;
+    align-self: center;
+}
+
+.profile-container img{
+    display: inline-block;
+    width: 250px;
+    height: auto;
+    border-radius: 18px;
+    margin-right: 20px;
+}
+
+.profile-container h1{
+    display: inline-block;
+    margin:0;
+}
+
+.stats-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 10px;
+}
+
+.stat-box {
+    background-color: #f0f0f0;
+    border-radius: 5px;
+    padding: 10px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    min-width: 100px;
+}
+.pitch-arsenal-container  {
+    width: 250px; /* Set a fixed width */
+    height: fit-content; /* Set a fixed height */
+    border: 1px solid #ccc;
+    padding: 10px;
+    box-sizing: border-box; /* Ensure padding is included in the width and height */
+    background-color: #fff;
+    border-radius: 10px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.518);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.pitch-arsenal {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 10px;
+    align-items: center;
+    justify-content: center;
+}
+.content-container {
+    display: flex;
+    flex-direction: column;
+    margin: 20px;
+}
+
+.centered-title {
+    text-align: center;
+    margin: 20px 0;
+    font-size: 24px;
+    font-weight: 600;
+}
+
+.arsenal-and-model-container {
+    display: flex;
+    align-items: center;
+    justify-items: center;
+    padding-bottom: 25px;
+    align-self: center;
+    
+}
+.model-container {
+    background-color: #fff;
+    border-radius: 10px;
+    padding: 20px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.518);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    border: 1px solid #ccc;
+    box-sizing: border-box; /* Ensure padding is included in the width and height */
+    width: 500px; /* Allow the width to adjust automatically */
+    height: 500px; /* Allow the height to adjust automatically */
+    margin-left: 20px; /* Add some space between the containers */
+}
+
+.zone-graphic-container {
+    background-color: #fff;
+    border-radius: 10px;
+    padding: 20px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.518);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    border: 1px solid #ccc;
+    box-sizing: border-box; /* Ensure padding is included in the width and height */
+    width: 500px; /* Allow the width to adjust automatically */
+    height: 500px; /* Allow the height to adjust automatically */
+ 
+    margin-left: 20px ;
+}
+
+#zone-graphic {
+    width: 100%;
+    height: 100%;
+}
+canvas {
+    display: block;
+    margin: 20px auto;
+    width:auto;
+    height: auto;
+  }
+
+.pitch-box {
+    background-color: #f0f0f0;
+    border-radius: 5px;
+    padding: 10px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    min-width: 100px;
+}
+.pitch-ff {
+    background-color: #4a90e2; /* Four-Seam Fastball */
+}
+
+.pitch-si {
+    background-color: #50e3c2; /* Sinker */
+}
+
+.pitch-fc {
+    background-color: #f5a623; /* Cutter */
+}
+
+.pitch-sl {
+    background-color: #d0021b; /* Slider */
+}
+
+.pitch-ch {
+    background-color: #cf813d; /* Changeup */
+}
+
+.pitch-cu {
+    background-color: #7ed321; /* Curveball */
+}
+
+.pitch-fs {
+    background-color: #bd10e0; /* Splitter */
+}
+
+.pitch-kn {
+    background-color: #9013fe; /* Knuckleball */
+}
+
+.pitch-st {
+    background-color: #f8e71c; /* Strike */
+    color: #000; /* Dark text color for better contrast */
+}
+
+.pitch-sv {
+    background-color: #b8e986; /* Screwball */
+}
+.player-header {
+    text-align: center;
+    margin: 2rem 0;
+}
+
+.player-info {
+    display: flex;
+    justify-content: center;
+    gap: 2rem;
+    margin-top: 1rem;
+}
+
+footer{
+    background-color: #000;
+    color: #fff;
+    padding: 100px 80px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
