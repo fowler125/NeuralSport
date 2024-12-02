@@ -1,0 +1,290 @@
+@import url('https://fonts.googleapis.com/css2?family=Ubuntu:wght@300;400;500;700&display=swap');
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Ubuntu', sans-serif;
+}
+a{
+  text-decoration: none;
+  color: #000;
+}
+
+/* Background color for whole page */
+body{
+  background-color: #f1f1f1;
+}
+
+/* Start of NavBar Formatting*/
+nav{
+  padding: 0 80px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 80px;
+}
+nav a.logo{
+  font-size: 33px;
+  color: orange;
+  font-weight: 600;
+}
+nav .links a:not(:last-child){
+  margin-right: 20px;
+}
+nav .links a {
+  padding: 8px 8px;
+  border-radius: 4px;
+  transition: background-color 0.3s ease;
+}
+nav .links a:hover{
+  color: whitesmoke;
+  background: orange;
+  width: 200px;
+  height: 200px;
+}
+nav .login button{
+  padding: 8px 14px;
+  border: none;
+  cursor: pointer;
+  background-color: transparent;
+}
+
+nav .login button.signup{
+  background-color: #000;
+  color: #fff;
+  border-radius: 4px;
+  margin-right: 14px;
+}
+/* End of NavBar */
+
+/* Start of Header */
+header{
+  padding: 0 80px;
+  height: calc(100vh - 80px);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+header .left{
+  width: 700px;
+}
+
+header .left h1{
+  font-size: 80px;
+}
+
+header .left h1 span{
+  color: orange;
+}
+
+header .left p{
+  margin: 40px 0;
+  color: #777;
+}
+
+header .left a{
+  display: flex;
+  align-items: center;
+  background: #000;
+  width: 200px;
+  padding: 8px;
+  border-radius: 60px;
+  margin-bottom: 15px;
+  transition:background-color 0.3s ease;
+}
+header .left a:hover{
+  color: orange;
+}
+
+header .left a i{
+  background-color: #fff;
+  font-size: 24px;
+  border-radius: 50%;
+  padding: 8px;
+}
+
+header .left a span{
+  color: #fff;
+  margin-left: 10px;
+}
+/* End of Header */
+
+/* Start of Slideshow */
+.slideshow {
+  position: relative;
+  width: 800px; /* Set the width of the slideshow */
+  height: 800px; /* Set the height of the slideshow */
+  margin-right: 10px;
+}
+.slideshow img {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  opacity: 0;
+  transition: opacity 1s;
+}
+.slideshow img.active {
+  opacity: 1;
+}
+/*End of Slideshow */
+
+/* Start of Sports Summary */
+.sports-summary{
+  padding: 0 80px;
+  margin-top: 30px;
+}
+.sports-summary .category{
+  display: flex;
+  gap: 14px;
+}
+.sports-summary .category a{
+  background-color: #dfdcdc;
+  padding: 8px 14px;
+  font-size: 15px;
+  border-radius: 14px;
+  transition: all 0.3s ease;
+}
+.sports-summary .category a:hover{
+  color: #fff;
+  background-color: #0f2182;
+}
+.sports-summary .players{
+  padding: 40px 0;
+  display: flex;
+  justify-content: space-between;
+  gap: 20px;
+}
+.sports-summary .players .item {
+  padding: 20px;
+  background: #fff;
+  border-radius: 18px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease;
+}
+.sports-summary .players .item:hover {
+  box-shadow: none;
+}
+.sports-summary .players .item img{
+  width: 360px;
+  height: 280px;
+  
+}
+.sports-summary .players .item .info{
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  padding: 12px 0;
+  border-bottom: 1px solid #edecec;
+}
+.sports-summary .players .item .info h5{
+  font-size: 18px;
+}
+.sports-summary .players .item .info .btc{
+  margin-top: 10px;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.sports-summary .players .item .btc i{
+  font-size: 22px;
+  color: #304ffe;
+}
+
+.sports-summary .players .item .btc p{
+  font-size: 12px;
+  color: #304ffe;
+}
+
+.sports-summary .players .item .info > p{
+  font-size: 12px;
+  color: #989898;
+}
+
+.sports-summary .players .item .bid{
+  padding: 14px 0 4px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.sports-summary .players .item .bid p,
+.sports-summary .players .item .bid a{
+  background-color: #edecec;
+  padding: 6px 10px;
+  font-size: 13px;
+  border-radius: 10px;
+}
+
+.sports-summary .players .item .bid a{
+  color: #304ffe;
+  background: transparent;
+  font-weight: bold;
+  transition: all 0.3s ease;
+}
+
+.sports-summary .players .item .bid a:hover{
+  color: orange;
+  background-color: #000;
+}
+/* End of Sports Summary */
+
+/* Start of Footer */
+footer{
+  background-color: #000;
+  color: #fff;
+  padding: 100px 80px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+footer h3{
+  font-size: 48px;
+}
+footer .right{
+  width: 80%;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 26px;
+}
+
+footer .right .links{
+  display: flex;
+  gap: 30px;
+}
+
+footer .right .links a{
+  color: #989898;
+  transition: color 0.3s ease;
+}
+
+footer .right .links a:hover{
+  color: #fff;
+}
+
+footer .right .social{
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+footer .right .social i{
+  font-size: 30px;
+  cursor: pointer;
+  transition: color 0.3s ease;
+}
+
+footer .right .social i:hover{
+  color: #304ffe;
+}
+
+footer .right p{
+  font-size: 13px;
+  color: #777;
+}
+

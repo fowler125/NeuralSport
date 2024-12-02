@@ -1,0 +1,170 @@
+.basketball-header {
+  padding: 20px;
+  text-align: center;
+}
+
+.basketball-header h1 {
+  font-size: 36px;
+  color: #ff4500; /* Example color */
+  margin-bottom: 20px;
+  align-items: left;
+}
+
+.games {
+  display: flex;
+  justify-content: space-between;
+  color: white;
+  margin: 20px 0;
+  width: 200px;
+  height: 200px;
+  background: black;
+}
+
+.basketball {
+  padding: 0 80px;
+  margin-top: 30px;
+}
+
+.basketball .category {
+  display: flex;
+  gap: 14px;
+}
+
+.basketball .category a {
+  background-color: #dfdcdc;
+  padding: 8px 14px;
+  font-size: 25px;
+  border-radius: 14px;
+  transition: all 0.3s ease;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.208);
+}
+
+.basketball .category a:hover {
+  color: #fff;
+  background-color: #0f2182;
+}
+
+.basketball .placques {
+  padding: 40px 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+}
+
+.basketball .placques .item img {
+  width: 280px;
+  height: 280px;
+  border-radius: 18px;
+}
+
+.basketball .placques .game {
+  background-color: #f0f0f0;
+  padding: 20px;
+  border-radius: 15px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  width: calc(33.333% - 20px); /* Adjust width as needed */
+  box-sizing: border-box;
+  transition: max-height 0.3s ease, padding 0.3s ease;
+  overflow: hidden;
+  max-height: 100px; /* Collapsed height */
+}
+
+.basketball .placques .game.expanded {
+  max-height: 500px; /* Expanded height */
+  padding: 20px;
+}
+
+.basketball .placques .game-info {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.basketball .placques .game h2 {
+  font-size: 24px;
+  margin-bottom: 10px;
+}
+
+.basketball .placques .game p {
+  font-size: 18px;
+  margin-bottom: 10px;
+}
+
+.basketball .placques .game .game-status {
+  font-size: 16px;
+  color: #888;
+  margin-bottom: 10px;
+  text-align: center;
+  flex: 1;
+}
+
+.basketball .placques .game .team-info {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.basketball .placques .game .team-details {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 10px;
+}
+
+.basketball .placques .game .team-logo {
+  width: 60px;
+  height: 60px;
+}
+
+.basketball .placques .game .team-score {
+  font-size: 24px;
+  margin-left: 10px;
+}
+
+.basketball .placques .game .team-score.bold {
+  font-weight: bold;
+}
+
+.basketball .placques .game .periods-container {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 20px; /* Add margin to move it down */
+}
+
+.basketball .placques .game .periods-header {
+  display: flex;
+  justify-content: space-between;
+  font-weight: bold;
+}
+
+.basketball .placques .game .periods-header div {
+  width: 22%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.basketball .placques .game .periods {
+  display: flex;
+  justify-content: space-between;
+}
+
+.basketball .placques .game .period-box {
+  width: 22%;
+  padding: 10px;
+  background-color: #e0e0e0;
+  border-radius: 5px;
+  text-align: center;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.basketball .placques .game .team-name {
+  width: 22%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-weight: bold;
+}
