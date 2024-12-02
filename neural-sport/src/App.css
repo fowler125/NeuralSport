@@ -314,13 +314,14 @@ footer .right p{
 /* Media Queries for Responsive Design */
 @media (max-width: 1200px) {
   .sports-summary .players {
+    display: flex;
     flex-wrap: wrap;
-    justify-content: center;
+    justify-content: space-between;
+    row-gap: 30px;
   }
 
   .sports-summary .players .item {
-    width: 45%;
-    margin-bottom: 20px;
+    width: 48%;
   }
 
   .slideshow-container {
@@ -328,8 +329,36 @@ footer .right p{
   }
 }
 
+@media (max-width: 992px) {
+  .sports-summary .players {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    row-gap: 30px;
+  }
+
+  .sports-summary .players .item {
+    width: 48%;
+  }
+
+  .slideshow-container {
+    max-width: 100%;
+  }
+
+  footer .right .social {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  footer .right .links {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}
+
 @media (max-width: 768px) {
   .sports-summary .players {
+    display: flex;
     flex-direction: column;
     align-items: center;
   }
@@ -351,6 +380,25 @@ footer .right p{
   footer .right .links {
     flex-direction: column;
     align-items: flex-start;
+  }
+}
+
+@media (max-width: 576px) {
+  .sports-summary .players .item {
+    width: 100%;
+    margin-bottom: 20px;
+  }
+
+  .slideshow-container {
+    max-width: 100%;
+  }
+
+  footer .right .social i {
+    font-size: 24px;
+  }
+
+  footer .right p {
+    font-size: 12px;
   }
 }
 
