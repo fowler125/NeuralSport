@@ -113,9 +113,9 @@ header .left a span{
 /* Start of Slideshow */
 .slideshow {
   position: relative;
-  width: 800px; /* Set the width of the slideshow */
-  height: 800px; /* Set the height of the slideshow */
-  margin-right: 10px;
+  width: 600px; /* Set the width of the slideshow */
+  height: 600px; /* Set the height of the slideshow */
+  margin-right: 100px;
 }
 .slideshow img {
   position: absolute;
@@ -286,5 +286,90 @@ footer .right .social i:hover{
 footer .right p{
   font-size: 13px;
   color: #777;
+}
+
+/* Slideshow Styles */
+.slideshow-container {
+  width: 100%;
+  max-width: 1200px;
+  margin: auto;
+  position: relative;
+  overflow: hidden;
+}
+
+.slideshow-slide {
+  display: none;
+  width: 100%;
+}
+
+.slideshow-slide img {
+  width: 100%;
+  height: auto;
+}
+
+.slideshow-active {
+  display: block;
+}
+
+/* Media Queries for Responsive Design */
+@media (max-width: 1200px) {
+  .sports-summary .players {
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  .sports-summary .players .item {
+    width: 45%;
+    margin-bottom: 20px;
+  }
+
+  .slideshow-container {
+    max-width: 100%;
+  }
+}
+
+@media (max-width: 768px) {
+  .sports-summary .players {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .sports-summary .players .item {
+    width: 80%;
+    margin-bottom: 20px;
+  }
+
+  .slideshow-container {
+    max-width: 100%;
+  }
+
+  footer .right .social {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  footer .right .links {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}
+
+@media (max-width: 480px) {
+  .sports-summary .players .item {
+    width: 100%;
+    margin-bottom: 20px;
+  }
+
+  .slideshow-container {
+    max-width: 100%;
+  }
+
+  footer .right .social i {
+    font-size: 24px;
+  }
+
+  footer .right p {
+    font-size: 12px;
+  }
 }
 
