@@ -8,7 +8,7 @@ const port = 5000;
 app.use(cors());
 app.use(express.json());
 
-mongoose.connect('mongodb+srv://jabarif123:LQbjdqm0kp7kyJYn@cluster0.gzmna.mongodb.net/nba?retryWrites=true&w=majority', {
+mongoose.connect('', {
     useNewUrlParser: true,
     useUnifiedTopology: true,
 })
