@@ -112,8 +112,8 @@
 }
 
 .basketball .placques .game .team-logo {
-  width: 60px;
-  height: 60px;
+  width: 40px;
+  height: 40px;
 }
 
 .basketball .placques .game .team-score {
@@ -129,7 +129,7 @@
   display: flex;
   flex-direction: column;
   gap: 10px;
-  margin-top: 20px; /* Add margin to move it down */
+  
 }
 
 .basketball .placques .game .periods-header {
@@ -159,12 +159,4 @@
   display: flex;
   justify-content: center;
   align-items: center;
-}
-
-.basketball .placques .game .team-name {
-  width: 22%;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  font-weight: bold;
 }

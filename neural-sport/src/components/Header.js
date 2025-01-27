@@ -18,10 +18,10 @@ function Header() {
           <i className='bx bx-basketball'></i>
           <span>Basketball</span>
         </Link>
-        <a href="#">
+        <Link to="/football">
           <i className='bx bx-ball'></i>
           <span>Football</span>
-        </a>
+        </Link>
       </div>
       <Slideshow />
       

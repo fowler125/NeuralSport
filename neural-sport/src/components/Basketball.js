@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
+import { Link } from 'react-router-dom';
 import './Basketball.css';
 
 const teamLogos = {
@@ -23,6 +24,9 @@ const teamLogos = {
     "Spurs": "/assets/team_logos/san_antonio_spurs.png",
     "Nuggets": "/assets/team_logos/denver_nuggets.png",
     "Clippers": "/assets/team_logos/los_angeles_clippers.png",
+    "Bucks": "/assets/team_logos/milwaukee_bucks.png",
+    "Warriors": "/assets/team_logos/golden_state_warriors.png",
+    "Hawks": "/assets/team_logos/atlanta_hawks.png",
     // Add other teams as needed
 };
 
@@ -59,7 +63,7 @@ const Basketball = () => {
                 <div className="category">
                     <a href="#">Live Games</a>
                     <a href="#">Upcoming Games</a>
-                    <a href="#">Stats</a>
+                    <Link to="/stats">Stats</Link>
                 </div>
                 <div className="placques">
                     {games.map((game, index) => {
