@@ -27,6 +27,7 @@ const teamLogos = {
     "Bucks": "/assets/team_logos/milwaukee_bucks.png",
     "Warriors": "/assets/team_logos/golden_state_warriors.png",
     "Hawks": "/assets/team_logos/atlanta_hawks.png",
+    "76ers": "/assets/team_logos/philadelphia_76ers.png",
     // Add other teams as needed
 };
 
