@@ -1,4 +1,4 @@
-# Baseball Stats Analyzer
+# Neural Sport
 
 This repository provides tools to analyze baseball player statistics using the `pybaseball` library. The functions included allow you to fetch Statcast data, look up player IDs, and retrieve specific pitching statistics.
 
